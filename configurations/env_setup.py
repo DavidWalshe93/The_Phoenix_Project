@@ -1,4 +1,3 @@
-
 """
 Author:     David Walshe
 Date:       10 May 2021
@@ -18,19 +17,16 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-
     """Development Environment"""
     pass
 
 
 class TestConfig(Config):
-
     """Test Environment"""
     pass
 
 
 class ProductionConfig(Config):
-
     """Production Environment"""
     pass
 

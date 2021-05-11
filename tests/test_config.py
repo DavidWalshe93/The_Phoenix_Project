@@ -1,4 +1,3 @@
-
 """
 Author:     David Walshe
 Date:       10 May 2021
