@@ -3,9 +3,7 @@ Author:     David Walshe
 Date:       10 May 2021
 """
 
-import pytest
-
-import config as sut
+from configurations import env_setup as sut
 
 
 def test_dev_config_retrieval():

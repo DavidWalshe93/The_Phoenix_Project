@@ -1,4 +1,4 @@
 [run]
+include = */app/*, */configurations/*
+omit = *migrations*, *tests*
 branch = true
-source = .
-omit = *migrations*, *tests*, *venv*
