@@ -3,4 +3,6 @@ Author:     David Walshe
 Date:       11 May 2021
 """
 
-from .user import User
+import logging
+
+logger = logging.getLogger(__name__)

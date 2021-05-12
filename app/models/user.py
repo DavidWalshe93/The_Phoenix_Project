@@ -21,6 +21,17 @@ class User(db.Model):
     password = db.Column(db.String)
     last_login = db.Column(db.DateTime)
 
+    def as_dict(self) -> dict:
+        """
+        Returns dictionary representation of object, useful for JSON encoding.
+        """
+        return dict(
+            id=self.id,
+            name=self.name,
+            email=self.email,
+            last=self.last_login
+        )
+
     def __repr__(self) -> str:
         """Return string representation of User object."""
         return f"<User {self.name} - {self.last_login}>"

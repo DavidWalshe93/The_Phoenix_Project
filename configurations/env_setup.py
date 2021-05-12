@@ -6,29 +6,36 @@ Date:       10 May 2021
 import os
 
 # Path to project root directory
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 class Config:
     """
     Parent configuration, common for all configuration setups.
     """
-    pass
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    @staticmethod
+    def init_app(app):
+        pass
 
 
 class DevelopmentConfig(Config):
     """Development Environment"""
-    pass
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URL") or f"sqlite:///{os.path.join(BASE_DIR, 'data-dev.sqlite')}"
 
 
 class TestConfig(Config):
     """Test Environment"""
-    pass
+    # Disables error catching during request handling, improves error report output.
+    TESTING = True
+    # Use a in-memory database for testing.
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URL") or f"sqlite://"
 
 
 class ProductionConfig(Config):
     """Production Environment"""
-    pass
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or f"sqlite:///{os.path.join(BASE_DIR, 'data.sqlite')}"
 
 
 def get_config(env: str = None) -> Config:

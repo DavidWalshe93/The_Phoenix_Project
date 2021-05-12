@@ -39,6 +39,7 @@ def create_app(config_name: str = "dev") -> Flask:
 
     # Initialise Database.
     db.init_app(app)
+    db.create_all(app=app)
 
     # Add user blueprint to application
     from .user import user as user_blueprint
