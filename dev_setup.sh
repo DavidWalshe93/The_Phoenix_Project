@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # David Walshe
 # 11-May-2021
 

@@ -4,8 +4,7 @@ Date:       11 May 2021
 """
 
 import logging
-from typing import TYPE_CHECKING
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from datetime import datetime
 
 from flask import jsonify

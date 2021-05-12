@@ -4,7 +4,7 @@ Date:       12 May 2021
 """
 
 import pytest
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
 from typing import List, Dict, Union
 
 from flask.testing import Client

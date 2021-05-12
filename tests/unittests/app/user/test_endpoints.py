@@ -9,7 +9,7 @@ import json
 from flask import Response
 
 
-@pytest.mark.parametrize("size", [1, 2, 3])
+@pytest.mark.parametrize("size", [0, 1, 2, 3])
 def test_get_users(size, client_factory, users):
     """
     Validate a list of all users is returned on a GET request to /users endpoint.

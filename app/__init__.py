@@ -6,7 +6,6 @@ Date:       10 May 2021
 import logging
 
 from flask import Flask
-from flask.app import AppContext
 from flask_sqlalchemy import SQLAlchemy
 
 from configurations.env_setup import get_config

@@ -30,7 +30,7 @@ class TestConfig(Config):
     # Disables error catching during request handling, improves error report output.
     TESTING = True
     # Use a in-memory database for testing.
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URL") or f"sqlite://"
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URL") or "sqlite://"
 
 
 class ProductionConfig(Config):
