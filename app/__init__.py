@@ -88,7 +88,7 @@ def setup_api(app: Flask) -> Flask:
     api_bp = get_blueprint()
     api = Api(api_bp)
 
-    # Setup Routes.
+    # Setup API Routes/Endpoints.
     api.add_resource(UsersAPI, "/api/v1/users", endpoint="users")
     api.add_resource(RegisterAPI, "/api/v1/user/register", endpoint="register")
     api.add_resource(LoginAPI, "/api/v1/user/login", endpoint="login")
