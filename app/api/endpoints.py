@@ -53,6 +53,8 @@ class LoginAPI(Resource):
 
         :return: A JSON list of User objects.
         """
+        pass
+
 
 
 

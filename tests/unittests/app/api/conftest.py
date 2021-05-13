@@ -9,7 +9,7 @@ from typing import List, Dict, Union
 
 from flask.testing import Client
 
-from app import create_app, db
+from app import create_app, db, rest_api
 from app.models import User
 
 
@@ -103,6 +103,7 @@ def client_factory(init_db) -> callable:
         with app.test_client() as client:
             with app.app_context():
                 init_db(size=size)
+                print(rest_api.endpoints)
 
                 # Return context objects.
                 yield client, app, db, User

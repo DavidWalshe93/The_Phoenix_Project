@@ -5,7 +5,7 @@ Date:       10 May 2021
 
 import logging
 
-from flask import Flask
+from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_restful import Api
@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 # Construct Flask extensions, initialise in factory function.
 db = SQLAlchemy()
 login_manager = LoginManager()
-rest_api = Api()
+api_blueprint = Blueprint("api", __name__)
+rest_api = Api(api_blueprint)
 
 
 def create_app(config_name: str = "dev") -> Flask:
@@ -49,9 +50,9 @@ def create_app(config_name: str = "dev") -> Flask:
 
     # Initialise and route Flask-RESTful API for User.
     from .api import UserAPI, UsersAPI
-    rest_api.add_resource(UserAPI, "/api/v1/user", endpoint="user")
+    # rest_api.add_resource(UserAPI, "/api/v1/user", endpoint="user")
     rest_api.add_resource(UsersAPI, "/api/v1/users", endpoint="users")
 
-    rest_api.init_app(app=app)
+    app.register_blueprint(api_blueprint)
 
     return app

@@ -10,6 +10,8 @@ from flask import Response
 
 from .utils import FlaskTestRig
 
+NUM_USERS = 3
+
 
 # ======================================================================================================================
 # Test helper functions.
@@ -33,9 +35,7 @@ def assert_initial_state(rig, user_data):
 # Endpoint tests
 # ======================================================================================================================
 
-
-@pytest.mark.parametrize("size", [0, 1, 3])
-def test_get_users(size, client_factory, users):
+def test_get_users(client_factory, users):
     """
     Validate a list of all users is returned on a GET request to /users endpoint.
 
@@ -45,12 +45,12 @@ def test_get_users(size, client_factory, users):
     :status:    200
     :response:  A list of user objects.
     """
-    expected = users(size=size, datetime_as_string=True)
+    expected = users(size=NUM_USERS, datetime_as_string=True)
 
-    rig = FlaskTestRig.create(client_factory(size=size))
+    rig = FlaskTestRig.create(client_factory(size=NUM_USERS))
 
     # Make request and gather response.
-    res: Response = rig.client.get("/v1/users")
+    res: Response = rig.client.get("/api/v1/users")
 
     # Get JSON data returned.
     data = json.loads(res.data)
@@ -60,8 +60,7 @@ def test_get_users(size, client_factory, users):
     assert res.status_code == 200
 
 
-@pytest.mark.parametrize("size", [0, 1, 2, 3])
-def test_register(size, client_factory):
+def test_register(client_factory):
     """
     Validate a user is created with a POST to ~/v1/user.
 
@@ -71,7 +70,7 @@ def test_register(size, client_factory):
     :status:    201
     :response:  None
     """
-    rig = FlaskTestRig.create(client_factory(size=size))
+    rig = FlaskTestRig.create(client_factory(size=NUM_USERS))
 
     # Test data
     user_data = {
