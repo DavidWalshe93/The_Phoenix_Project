@@ -9,7 +9,7 @@ from typing import List, Dict, Union
 
 from flask.testing import Client
 
-from app import create_app, db, bcrypt
+from app import create_app, db
 from app.models import User
 
 

@@ -6,13 +6,14 @@ Date:       11 May 2021
 import logging
 
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 from .. import db
 
 logger = logging.getLogger(__name__)
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """Models a User object from a users SQL table."""
     __tablename__ = "users"
 
