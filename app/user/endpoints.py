@@ -7,7 +7,7 @@ import logging
 import json
 
 from flask import jsonify, request
-from flask_login import login_required
+from flask_login import login_required, login_user
 
 from . import user
 from .utils import UserInfo
@@ -17,7 +17,33 @@ from ..models.user import User
 logger = logging.getLogger(__name__)
 
 
+@user.route("/v1/user", methods=["POST"])
+def register():
+    """
+    Creates a user object in the database.
+
+    :return: A 201 response.
+    """
+    # Get request JSON body (as bytes)
+    req_json = request.get_data()
+
+    # Use factory to create new user information dictionary.
+    user_info: dict = UserInfo.create(req_json)
+
+    # Create new user object.
+    new_user = User(**user_info)
+
+    # Add new user to database.
+    db.session.add(new_user)
+    db.session.commit()
+
+    login_user(new_user)
+
+    return "", 201
+
+
 @user.route("/v1/users", methods=["GET"])
+@login_required
 def get_users():
     """
     Gathers all users in the given database and returns them as the response.
@@ -31,26 +57,3 @@ def get_users():
     data = [UserInfo.get(row) for row in results]
 
     return jsonify(data)
-
-
-@user.route("/v1/user", methods=["POST"])
-def create_user():
-    """
-    Creates a user object in the database.
-
-    :return: A 201 response.
-    """
-    # Get request JSON body (as bytes)
-    req_json = request.get_data()
-
-    # Use factory to create new user information dictionary.
-    user_info = UserInfo.create(req_json)
-
-    # Create new user object.
-    new_user = User(**user_info)
-
-    # Add new user to database.
-    db.session.add(new_user)
-    db.session.commit()
-
-    return "", 201

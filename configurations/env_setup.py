@@ -23,12 +23,18 @@ class Config:
 class DevelopmentConfig(Config):
     """Development Environment"""
     SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URL") or f"sqlite:///{os.path.join(BASE_DIR, 'data-dev.sqlite')}"
+    # Set secret key for flask-login sessions
+    SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
 class TestConfig(Config):
     """Test Environment"""
     # Disables error catching during request handling, improves error report output.
     TESTING = True
+    # Disables authentication checks for testing, if required.
+    LOGIN_DISABLED = False
+    # Set secret key for flask-login sessions
+    SECRET_KEY = os.environ.get("SECRET_KEY")
     # Use a in-memory database for testing.
     SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URL") or "sqlite://"
 
@@ -36,6 +42,8 @@ class TestConfig(Config):
 class ProductionConfig(Config):
     """Production Environment"""
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or f"sqlite:///{os.path.join(BASE_DIR, 'data.sqlite')}"
+    # Set secret key for flask-login sessions
+    SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
 def get_config(env: str = None) -> Config:

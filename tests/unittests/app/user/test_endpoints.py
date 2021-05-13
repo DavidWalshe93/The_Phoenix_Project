@@ -61,7 +61,7 @@ def test_get_users(size, client_factory, users):
 
 
 @pytest.mark.parametrize("size", [0, 1, 2, 3])
-def test_create_user(size, client_factory):
+def test_register(size, client_factory):
     """
     Validate a user is created with a POST to ~/v1/user.
 
