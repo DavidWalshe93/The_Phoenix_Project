@@ -79,7 +79,7 @@ class RegisterAPI(Resource):
 
         login_user(new_user)
 
-        return "", 201
+        return make_response(new_user.generate_auth_token(3600), 201)
 
 
 class LoginAPI(Resource):

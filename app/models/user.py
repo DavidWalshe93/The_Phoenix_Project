@@ -10,7 +10,7 @@ from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from flask_httpauth import HTTPBasicAuth
-from itsdangerous import Serializer
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from .. import db
 from .. import login_manager
@@ -67,10 +67,10 @@ class User(UserMixin, db.Model):
         """
         s = Serializer(current_app.config["SECRET_KEY"], expires_in=expiration)
 
-        return s.dumps({"id": self.id}).decode("uft-8")
+        return dict(token=s.dumps({"id": self.id}).decode("utf8"))
 
     @staticmethod
-    def verify_auth_token(token) -> Union[User, None]:
+    def verify_auth_token(token) -> Union[object, None]:
         """
         Verifies an authentication token and returns its assigned user if valid.
 
@@ -96,7 +96,7 @@ class User(UserMixin, db.Model):
 
         :return: Whether the User already exists.
         """
-        if self.query.filter_by(email=self.email):
+        if self.query.filter_by(email=self.email).first():
             return True
         else:
             return False

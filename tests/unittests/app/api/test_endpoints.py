@@ -35,8 +35,6 @@ def assert_initial_state(rig, user_data):
 # ======================================================================================================================
 
 
-
-
 def test_register(client_factory):
     """
     Validate a user is created with a POST to ~/v1/user.

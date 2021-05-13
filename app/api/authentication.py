@@ -71,6 +71,9 @@ def password_auth(email: str, password: str) -> bool:
     return user.verify_password(password)
 
 
+
+
+
 @auth.error_handler
 def auth_error():
     """Callback for failed authentication requests."""
