@@ -5,9 +5,6 @@ Date:       10 May 2021
 
 import logging
 
-
-
-
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -41,8 +38,6 @@ def create_app(config_name: str = "dev") -> Flask:
     # Get environment configuration.
     config = get_config(config_name)
 
-
-
     # Inject configuration into application instance.
     app.config.from_object(config)
 
@@ -61,6 +56,7 @@ def create_app(config_name: str = "dev") -> Flask:
     # rest_api.add_resource(UserAPI, "/api/v1/user", endpoint="user")
     rest_api.add_resource(UsersAPI, "/api/v1/users", endpoint="users")
     rest_api.add_resource(RegisterAPI, "/api/v1/user/register", endpoint="register")
+    rest_api.add_resource(LoginAPI, "/api/v1/user/login", endpoint="login")
 
     app.register_blueprint(api_blueprint)
 

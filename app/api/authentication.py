@@ -32,10 +32,10 @@ def verify_password(email_or_token: str, password: str) -> bool:
         return False
 
     if password == "":
-        logger.debug(f"Token provided.")
+        logger.debug(f"Authorized with Token.")
         return token_auth(token=email_or_token)
 
-    logger.debug(f"Email/Password provided.")
+    logger.debug(f"Authorized with Email/Password.")
     return password_auth(email=email_or_token, password=password)
 
 

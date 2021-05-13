@@ -4,6 +4,7 @@ Date:       11 May 2021
 """
 
 import logging
+from dataclasses import dataclass
 
 from flask import jsonify, make_response
 from flask_restful import Resource, reqparse
@@ -59,14 +60,15 @@ class RegisterAPI(Resource):
 
     def post(self):
         """
-        Creates a user object in the database.
+        Creates a user object in the database and returns an authentication token to the client.
 
-        :return: A 201 response.
+        :return 201: User registration successful, user added to DB, return Auth token.
+        :return 400: User registration failure - email already in use.
         """
         # Get request JSON body (as bytes)
         req_json = register_parser.parse_args()
 
-        # Use registration factory to create new User object.
+        # Create new User object from request body to check Database against.
         new_user: User = UserUtils.create_user_from(req_json)
 
         # User already exists, return a 400 error.
@@ -79,20 +81,40 @@ class RegisterAPI(Resource):
         db.session.commit()
 
         login_user(new_user)
-        
+
         logger.info(f"New user created.")
         return make_response(new_user.generate_auth_token(3600), 201)
+
+
+login_parser = reqparse.RequestParser()
+login_parser.add_argument("email")
+login_parser.add_argument("password")
 
 
 class LoginAPI(Resource):
 
     def post(self):
         """
-        Gathers all users in the given database and returns them as the response.
+        Logs in a user and returns a authentication token.
 
-        :return: A JSON list of User objects.
+        :return 200: User sign-in successful, return Auth token.
+        :return 400: User sign-in failure, account doesnt exist.
         """
-        pass
+        # Get request JSON body (as bytes)
+        req_json = register_parser.parse_args()
+
+        # Create new User object from request body to check Database against.
+        current_user = User.query.filter_by(email=req_json.email).first()
+
+        # User does not exist, return a 400 error.
+        if not current_user or not current_user.already_exists:
+            logger.error(f"Bad Request - User does not have an account.")
+            return bad_request("Account does not exist, try registering instead.")
+
+        login_user(current_user)
+
+        logger.info(f"User {current_user.id} logged in.")
+        return make_response(current_user.generate_auth_token(3600), 200)
 
 # @user.route("/api/v1/user", methods=["POST"])
 # def register():
