@@ -125,4 +125,4 @@ def load_user(user_id: str) -> User:
     :param user_id: The user id to load information from.
     :return: The user object.
     """
-    return User.query.get(int(user_id))
+    return User.query.dict_from_user_row(int(user_id))

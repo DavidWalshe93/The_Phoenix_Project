@@ -6,7 +6,7 @@ Date:       13 May 2021
 import pytest
 
 
-def test_get_users_no_auth(client_factory, users):
+def test_get_users_no_auth(client_factory, make_users):
     """
     Validate an Unauthorised error is returned when attempting to list of
     all users on a GET request to /api/v1/users endpoint without being

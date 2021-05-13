@@ -5,85 +5,86 @@ Date:       12 May 2021
 
 import pytest
 from datetime import datetime
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Any
 
+import yaml
 from flask.testing import Client
 
 from app import create_app, db
 from app.models import User
 
 
+@pytest.fixture(scope="session")
+def load_users():
+    with open("./data/users.yml") as fh:
+        return yaml.safe_load(fh)
+
+
 @pytest.fixture
-def users() -> callable:
+def make_users(load_users) -> callable:
     """
     Creates and returns a list of users as dictionaries.
 
     :return: A callable for creating a list of user objects.
     """
-    _names = ["John Smith", "Mary Murphy", "Mike Coleman", "Susan Scot", "Mark Santos", "Jane Doe"]
-    # Create a generator of names.
-    _names = (name for name in _names)
+    users = load_users
 
-    def factory(size: int = 3, datetime_as_string: bool = False, include_password: bool = False) -> List[Dict[str, Union[str, datetime]]]:
+    # Create a generator of users.
+    _users = (user for user in users)
+
+    def factory(size: int = 3, exclude_password: bool = True) -> List[Dict[str, Union[str, datetime]]]:
         """
         :param size: The number of User dictionary instances to return.
-        :param datetime_as_string: Convert datatime to string representation.
-        :param include_password: Include user passwords in returned dictionary objects.
+        :param exclude_password: Exclude user passwords in returned dictionary objects.
         :return: A list of user dictionaries.
         """
         # Return only the number of instances requested by the user.
         try:
-            names = [next(_names) for _ in range(size)]
-            print(names)
+            user_batch = [next(_users) for _ in range(size)]
         except StopIteration as err:
-            raise StopIteration("No more names to yield in names generator.")
+            raise StopIteration("No more names to yield in names generator. (Max==50)")
 
-        # Generate 'last_login" times.
+        # Generate 'last_login" times for each user.
         epoch = 1620766488  # Tue, 11 May 2021 21:54:48 GMT
-        deltas = [t for t in range(0, 60 * len(names), 60)]
+        deltas = [t * 60 for t in range(0, len(user_batch))]
         times = [datetime.fromtimestamp(epoch + delta) for delta in deltas]
 
-        # Convert time into human readable text if required for comparisons.
-        if datetime_as_string:
-            date_format = "%a, %d %b %Y %H:%M:%S GMT"  # Tue, 11 May 2021 21:54:48 GMT
-            times = [f"{time.strftime(date_format)}" for time in times]
+        # Append last_login time to users.
+        user_batch = [{**user, "last_login": time} for user, time in zip(user_batch, times)]
 
-        # Create users
-        users = [dict(name=user, email=f"{user}@example.com".replace(" ", "_"), last_login=time) for user, time in zip(names, times)]
+        # Remove user password information if required.
+        if exclude_password:
+            _ = [user.pop("password") for user in user_batch]
 
-        # Enrich dictionary with user password information if required.
-        if include_password:
-            users = [dict(**user, password="".join(reversed(user["name"]))) for user in users]
-
-        return users
+        return user_batch
 
     return factory
 
 
 @pytest.fixture
-def init_db(users) -> callable:
+def init_db() -> callable:
     """
     Sets up the testing database and adds some User instances.
 
-    :param users: A list of user dictionaries.
     :return: A factory function to create a database.
     """
 
-    def _setup_db(size: int = 3):
+    def _setup_db(users: List[Dict[str, Any]]):
         """
-        Creates and populates a in-memory database for testing.
+        Creates and populates an in-memory database for testing.
 
         :param size: The number of users to add to the database.
         """
         # Creates tables in Database.
         db.drop_all()
         db.create_all()
-        # Create a list of User Models.
-        user_models = [User(**user) for user in users(size=size, include_password=True)]
-        # Add the User Models to the Database
-        [db.session.add(user) for user in user_models]
-        # Commit the changes.
-        db.session.commit()
+        if users is not None:
+            # Create a list of User Models.
+            user_models = [User(**user) for user in users]
+            # Add the User Models to the Database
+            [db.session.add(user) for user in user_models]
+            # Commit the changes.
+            db.session.commit()
 
         return db
 
@@ -99,18 +100,18 @@ def client_factory(init_db) -> callable:
     :return: A factory function for creating a Flask Client object.
     """
 
-    def factory(size: int = 3) -> Client:
+    def factory(users: List[Dict[str, Any]] = None) -> Client:
         """
         Creates and initialises a client object.
 
-        :param size: The number of instance to add to the database for testing.
+        :param users: The users to add to the test database.
         :return: A Flask Client object.
         """
         app = create_app("test")
 
         with app.test_client() as client:
             with app.app_context():
-                init_db(size=size)
+                init_db(users=users)
 
                 # Return context objects.
                 yield client, app, db, User

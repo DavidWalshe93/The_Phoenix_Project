@@ -16,6 +16,7 @@ class User:
     password: str
 
 
+# API PARAMS
 NUM_USERS = 50
 FORMAT = "pretty"
 NATIONALITY = "us,ie,gb"
@@ -35,6 +36,7 @@ def generate_users():
 
     data = response.json()
 
+    # Save only required information.
     users = []
     for user in data["results"]:
         name = user["login"]["username"]

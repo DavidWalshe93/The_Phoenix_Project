@@ -7,6 +7,7 @@ import json
 from typing import Generator, Dict
 from dataclasses import dataclass
 from contextlib import contextmanager
+from datetime import datetime
 
 from requests.auth import _basic_auth_str
 from flask import Flask, Response
@@ -66,7 +67,7 @@ def login(client: Client, user: dict) -> str:
                                      ))
 
     token = json.loads(response.data).get("token")
-
+    print(token)
     assert response.status_code == 200
     assert token != None
 
@@ -94,3 +95,15 @@ def basic_auth_header_token(token: str) -> Dict[str, str]:
     :return: A authorization header dictionary.
     """
     return {"Authorization": _basic_auth_str(token, "")}
+
+
+def datetime_as_string(time: datetime) -> str:
+    """
+    Convert time into human readable text if required for comparisons.
+
+    :param time: The datetime object to convert.
+    :return: The datetime objects time as a formatted string.
+    """
+    date_format = "%a, %d %b %Y %H:%M:%S GMT"  # Tue, 11 May 2021 21:54:48 GMT
+
+    return f"{time.strftime(date_format)}"
