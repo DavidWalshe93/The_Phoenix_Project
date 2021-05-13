@@ -11,6 +11,7 @@ from flask_httpauth import HTTPBasicAuth
 from ..models import User
 from .errors import unauthorized
 
+# auth = HTTPBasicAuth()
 auth = HTTPBasicAuth()
 
 logger = logging.getLogger(__name__)
@@ -27,11 +28,14 @@ def verify_password(email_or_token: str, password: str) -> bool:
     """
     # Check if the user supplied a email or a token, if anonymous user, return false.
     if email_or_token == "":
+        logger.debug(f"No email or token provided.")
         return False
 
     if password == "":
+        logger.debug(f"Token provided.")
         return token_auth(token=email_or_token)
 
+    logger.debug(f"Email/Password provided.")
     return password_auth(email=email_or_token, password=password)
 
 
@@ -69,9 +73,6 @@ def password_auth(email: str, password: str) -> bool:
 
     # Check if the users password is correct.
     return user.verify_password(password)
-
-
-
 
 
 @auth.error_handler

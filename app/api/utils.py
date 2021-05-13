@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class UserFactory:
+class UserUtils:
     """
     Dataclass to convert User table Rows into an object mapping.
     """
@@ -26,17 +26,17 @@ class UserFactory:
     password: str
     last_login: datetime
 
-    # @staticmethod
-    # def get(row: Row) -> Dict[str, Any]:
-    #     """
-    #     Factory method to create a UserInfo object from a User database row.
-    #
-    #     :param row: A row from the users table.
-    #     :return: A UserInfo object with values extracted from the passed row.
-    #     """
-    #     return dict(name=row.name,
-    #                 email=row.email,
-    #                 last_login=row.last_login)
+    @staticmethod
+    def dict_from_user_row(row: Row) -> Dict[str, Any]:
+        """
+        Factory method to create a UserInfo object from a User database row.
+
+        :param row: A row from the users table.
+        :return: A UserInfo object with values extracted from the passed row.
+        """
+        return dict(name=row.name,
+                    email=row.email,
+                    last_login=row.last_login)
 
     @classmethod
     def create_user_from(cls, data: bytes) -> User:

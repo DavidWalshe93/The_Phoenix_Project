@@ -5,12 +5,18 @@ Date:       10 May 2021
 
 import logging
 
+
+
+
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_restful import Api
 
 from configurations.env_setup import get_config
+from app.common.logger import init_logger
+
+init_logger(get_config("dev").LOGGER_CONFIG)
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +40,8 @@ def create_app(config_name: str = "dev") -> Flask:
 
     # Get environment configuration.
     config = get_config(config_name)
+
+
 
     # Inject configuration into application instance.
     app.config.from_object(config)
