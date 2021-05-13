@@ -9,6 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 from .. import db
+from .. import login_manager
 
 logger = logging.getLogger(__name__)
 
@@ -57,3 +58,14 @@ class User(UserMixin, db.Model):
     def __repr__(self) -> str:
         """Return string representation of User object."""
         return f"<User {self.name} - {self.last_login}>"
+
+
+@login_manager.user_loader
+def load_user(user_id: str) -> User:
+    """
+    Retrieves information on the logged in user.
+
+    :param user_id: The user id to load information from.
+    :return: The user object.
+    """
+    return User.query.get(int(user_id))

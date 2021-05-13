@@ -7,6 +7,7 @@ import logging
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 from configurations.env_setup import get_config
 
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 # Construct Flask extensions, initialise in factory function.
 db = SQLAlchemy()
+login_manager = LoginManager()
 
 
 def create_app(config_name: str = "dev") -> Flask:
@@ -39,6 +41,9 @@ def create_app(config_name: str = "dev") -> Flask:
     # Initialise Database.
     db.init_app(app)
     db.create_all(app=app)
+
+    # Initialise LoginManager
+    login_manager.init_app(app=app)
 
     # Add user blueprint to application
     from .user import user as user_blueprint
