@@ -4,6 +4,7 @@ Date:       11 May 2021
 """
 
 import logging
+from typing import Union
 
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -58,12 +59,24 @@ class User(UserMixin, db.Model):
     # ======================================================================================================================
 
     def generate_auth_token(self, expiration: int):
+        """
+        Generates an authentication token to replace password auth for users.
+
+        :param expiration: The expiry time in seconds for the generated token.
+        :return: A new authentication token.
+        """
         s = Serializer(current_app.config["SECRET_KEY"], expires_in=expiration)
 
         return s.dumps({"id": self.id}).decode("uft-8")
 
     @staticmethod
-    def verify_auth_token(token):
+    def verify_auth_token(token) -> Union[User, None]:
+        """
+        Verifies an authentication token and returns its assigned user if valid.
+
+        :param token: The token to verify.
+        :return: Returns the user the token is for if the token is valid, else returns None.
+        """
         s = Serializer(current_app.config["SECRET"])
         try:
             data = s.loads(token)
