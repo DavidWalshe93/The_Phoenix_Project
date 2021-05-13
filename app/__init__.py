@@ -20,13 +20,11 @@ logger = logging.getLogger(__name__)
 # Construct Flask extensions, initialise in factory function.
 db = SQLAlchemy()
 login_manager = LoginManager()
-api_blueprint = Blueprint("api", __name__)
-rest_api = Api(api_blueprint)
 
 
 def create_app(config_name: str = "dev") -> Flask:
     """
-    Factory function to create an application instance.
+    Application factory function to create a Flask application instance.
 
     Allows various configurations to be injected to easily enable dev/test/prod instance creation.
 
@@ -35,29 +33,66 @@ def create_app(config_name: str = "dev") -> Flask:
     """
     app = Flask(__name__)
 
+    app = setup_env(app, config_name)
+
+    app = init_plugins(app)
+
+    app = setup_api(app)
+
+    return app
+
+
+def setup_env(app: Flask, config_name: str) -> Flask:
+    """
+    Sets the application environment for the Flask object.
+    :param app: The Flask object.
+    :param config_name: The configuration environment to use.
+    :return: The Flask object.
+    """
     # Get environment configuration.
     config = get_config(config_name)
-
     # Inject configuration into application instance.
     app.config.from_object(config)
-
     # Initialise application configuration settings if required.
     config.init_app(app)
+
+    return app
+
+
+def init_plugins(app: Flask) -> Flask:
+    """
+    Initialises Flask plugins.
+
+    :param app: The Flask object.
+    :return: The Flask object.
+    """
 
     # Initialise Database.
     db.init_app(app)
     db.create_all(app=app)
-
     # Initialise LoginManager
     login_manager.init_app(app=app)
 
-    # Initialise and route Flask-RESTful API for User.
-    from .api import UserAPI, UsersAPI, LoginAPI, RegisterAPI
-    # rest_api.add_resource(UserAPI, "/api/v1/user", endpoint="user")
-    rest_api.add_resource(UsersAPI, "/api/v1/users", endpoint="users")
-    rest_api.add_resource(RegisterAPI, "/api/v1/user/register", endpoint="register")
-    rest_api.add_resource(LoginAPI, "/api/v1/user/login", endpoint="login")
+    return app
 
-    app.register_blueprint(api_blueprint)
+
+def setup_api(app: Flask) -> Flask:
+    """
+    Sets up the API Blueprint, Flask-RESTful API and Routing.
+
+    :param app: The Flask object.
+    :return: The
+    """
+    # Initialise and route Flask-RESTful API for User.
+    from .api import get_blueprint, UserAPI, UsersAPI, LoginAPI, RegisterAPI
+    api_bp = get_blueprint()
+    api = Api(api_bp)
+
+    # Setup Routes.
+    api.add_resource(UsersAPI, "/api/v1/users", endpoint="users")
+    api.add_resource(RegisterAPI, "/api/v1/user/register", endpoint="register")
+    api.add_resource(LoginAPI, "/api/v1/user/login", endpoint="login")
+
+    app.register_blueprint(api_bp)
 
     return app
