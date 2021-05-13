@@ -4,16 +4,13 @@ Date:       11 May 2021
 """
 
 import logging
-import json
 
-from flask import jsonify, request, make_response
+from flask import jsonify, make_response
 from flask_restful import Resource
-from flask_login import login_required, login_user
+from flask_login import login_required
 
-from . import user
-from .utils import UserInfo
-from .. import db
-from ..models.user import User
+from app.api.utils import UserInfo
+from app.models.user import User
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +45,7 @@ class UsersAPI(Resource):
         return make_response(jsonify(data), 200)
 
 
-class UserLoginAPI(Resource):
+class LoginAPI(Resource):
 
     def post(self):
         """
@@ -56,6 +53,7 @@ class UserLoginAPI(Resource):
 
         :return: A JSON list of User objects.
         """
+
 
 
 # @user.route("/api/v1/user", methods=["POST"])

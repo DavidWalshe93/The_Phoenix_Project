@@ -8,7 +8,6 @@ import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_httpauth import HTTPBasicAuth
 from flask_restful import Api
 
 from configurations.env_setup import get_config
@@ -18,8 +17,7 @@ logger = logging.getLogger(__name__)
 # Construct Flask extensions, initialise in factory function.
 db = SQLAlchemy()
 login_manager = LoginManager()
-auth = HTTPBasicAuth()
-api = Api()
+rest_api = Api()
 
 
 def create_app(config_name: str = "dev") -> Flask:
@@ -49,17 +47,11 @@ def create_app(config_name: str = "dev") -> Flask:
     # Initialise LoginManager
     login_manager.init_app(app=app)
 
-    # Initialise HTTPAuth
-
     # Initialise and route Flask-RESTful API for User.
-    from .user import UserAPI, UsersAPI
-    api.add_resource(UserAPI, "/api/v1/user", endpoint="user")
-    api.add_resource(UsersAPI, "/api/v1/users", endpoint="users")
+    from .api import UserAPI, UsersAPI
+    rest_api.add_resource(UserAPI, "/api/v1/user", endpoint="user")
+    rest_api.add_resource(UsersAPI, "/api/v1/users", endpoint="users")
 
-    api.init_app(app=app)
-
-    # Add user blueprint to application
-    from .user import user as user_blueprint
-    app.register_blueprint(user_blueprint)
+    rest_api.init_app(app=app)
 
     return app
