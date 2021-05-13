@@ -20,7 +20,6 @@ def init_logger(config_file: str) -> None:
 
     :param config_file: The path to the config file to initialise the logger with.
     """
-    print(config_file)
     with open(config_file, "r") as fh:
         config = yaml.safe_load(fh.read())
 
