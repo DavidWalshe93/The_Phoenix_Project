@@ -5,11 +5,14 @@ Date:       12 May 2021
 
 import pytest
 from datetime import datetime
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Generator
+from dataclasses import dataclass
 
+from flask import Flask
 from flask.testing import Client
+from flask_sqlalchemy import SQLAlchemy
 
-from app import create_app, db
+from app import create_app, db, bcrypt
 from app.models import User
 
 
@@ -41,7 +44,7 @@ def users() -> callable:
             times = [f"{time.strftime(date_format)}" for time in times]
 
         # Create users
-        users = [dict(name=user, email=f"{user}@example.com", last_login=time) for user, time in zip(names, times)]
+        users = [dict(name=user, email=f"{user}@example.com".replace(" ", "_"), last_login=time) for user, time in zip(names, times)]
 
         # Enrich dictionary with user password information if required.
         if include_password:
@@ -53,7 +56,7 @@ def users() -> callable:
 
 
 @pytest.fixture
-def setup_db(users) -> callable:
+def init_db(users) -> callable:
     """
     Sets up the testing database and adds some User instances.
 
@@ -68,6 +71,7 @@ def setup_db(users) -> callable:
         :param size: The number of users to add to the database.
         """
         # Creates tables in Database.
+        db.drop_all()
         db.create_all()
         # Create a list of User Models.
         user_models = [User(**user) for user in users(size=size, include_password=True)]
@@ -76,31 +80,59 @@ def setup_db(users) -> callable:
         # Commit the changes.
         db.session.commit()
 
+        return db
+
     return _setup_db
 
 
 @pytest.fixture
-def client_factory(setup_db: callable) -> callable:
+def client_factory(init_db) -> callable:
     """
     Supplies a flask client object to test the REST endpoints of the application.
 
-    :param setup_db: Function to setup testing database.
+    :param init_db: Function to setup testing database.
     :return: A factory function for creating a Flask Client object.
     """
 
-    def factory(size: int = 3) -> Client:
+    def factory(size: int = 3, return_db: bool = False) -> Client:
         """
         Creates and initialises a client object.
 
         :param size: The number of instance to add to the database for testing.
         :return: A Flask Client object.
         """
+        print(type(db))
         app = create_app("test")
 
         with app.test_client() as client:
-            with app.app_context():
-                setup_db(size=size)
-
-            return client
+            with app.app_context() as ctx:
+                init_db(size=size)
+                # Pushes the application context to global scope for testing.
+                # ctx.push()
+                # if not return_db:
+                yield client, app, db, User
+                # else:
+                #     yield client, db
+                db.session.remove()
+                db.drop_all()
+                # ctx.pop()
 
     return factory
+
+
+@pytest.fixture
+def database():
+    """Returns the database object as a test fixture."""
+    return db
+
+
+@pytest.fixture
+def crypt():
+    """Returns the bcrypt object as a test fixture."""
+    return bcrypt
+
+
+@pytest.fixture
+def user_model():
+    """Returns the User model object as a test fixture."""
+    return User
