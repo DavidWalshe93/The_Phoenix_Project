@@ -49,9 +49,10 @@ def create_app(config_name: str = "dev") -> Flask:
     login_manager.init_app(app=app)
 
     # Initialise and route Flask-RESTful API for User.
-    from .api import UserAPI, UsersAPI
+    from .api import UserAPI, UsersAPI, LoginAPI, RegisterAPI
     # rest_api.add_resource(UserAPI, "/api/v1/user", endpoint="user")
     rest_api.add_resource(UsersAPI, "/api/v1/users", endpoint="users")
+    rest_api.add_resource(RegisterAPI, "/api/v1/user/register", endpoint="register")
 
     app.register_blueprint(api_blueprint)
 

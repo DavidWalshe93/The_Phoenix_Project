@@ -6,11 +6,13 @@ Date:       11 May 2021
 import logging
 
 from flask import jsonify, make_response
-from flask_restful import Resource
-from flask_login import login_required
+from flask_restful import Resource, reqparse
+from flask_login import login_required, login_user
 
-from app.api.utils import UserInfo
-from app.models.user import User
+from .. import db
+from ..api.utils import UserInfo
+from ..models.user import User
+from .authentication import auth
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +32,7 @@ class UserAPI(Resource):
 
 class UsersAPI(Resource):
 
+    @auth.login_required
     def get(self):
         """
         Gathers all users in the given database and returns them as the response.
@@ -45,6 +48,41 @@ class UsersAPI(Resource):
         return make_response(jsonify(data), 200)
 
 
+register_parser = reqparse.RequestParser()
+register_parser.add_argument("name")
+register_parser.add_argument("email")
+register_parser.add_argument("password")
+
+
+class RegisterAPI(Resource):
+
+    def post(self):
+        """
+        Creates a user object in the database.
+
+        :return: A 201 response.
+        """
+        # Get request JSON body (as bytes)
+        req_json = register_parser.parse_args()
+
+        from pprint import pprint
+        pprint(req_json)
+
+        # Use factory to create new user information dictionary.
+        user_info: dict = UserInfo.create(req_json)
+
+        # Create new user object.
+        new_user = User(**user_info)
+
+        # Add new user to database.
+        db.session.add(new_user)
+        db.session.commit()
+
+        login_user(new_user)
+
+        return "", 201
+
+
 class LoginAPI(Resource):
 
     def post(self):
@@ -52,15 +90,6 @@ class LoginAPI(Resource):
         Gathers all users in the given database and returns them as the response.
 
         :return: A JSON list of User objects.
-        """
-        pass
-
-
-class RegisterAPI(Resource):
-
-    def post(self):
-        """
-        Registers a new user in the system.
         """
         pass
 

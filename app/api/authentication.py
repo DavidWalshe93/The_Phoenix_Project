@@ -40,3 +40,9 @@ def verify_password(email: str, password: str) -> bool:
 
     # Check if the users password is correct.
     return user.verify_password(password)
+
+
+@auth.error_handler
+def auth_error():
+    """Callback for failed authentication requests."""
+    return unauthorized("Invalid user credentials")
