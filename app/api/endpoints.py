@@ -6,7 +6,7 @@ Date:       11 May 2021
 import logging
 from dataclasses import dataclass
 
-from flask import jsonify, make_response
+from flask import jsonify, make_response, Blueprint
 from flask_restful import Resource, reqparse
 from flask_login import login_required, login_user
 
@@ -17,6 +17,11 @@ from .authentication import auth
 from .errors import bad_request
 
 logger = logging.getLogger(__name__)
+
+
+def get_blueprint():
+    """API Blueprint factory."""
+    return Blueprint("api", __name__)
 
 
 class UserAPI(Resource):
