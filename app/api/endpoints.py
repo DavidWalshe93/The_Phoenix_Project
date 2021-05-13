@@ -56,7 +56,13 @@ class LoginAPI(Resource):
         pass
 
 
+class RegisterAPI(Resource):
 
+    def post(self):
+        """
+        Registers a new user in the system.
+        """
+        pass
 
 # @user.route("/api/v1/user", methods=["POST"])
 # def register():
