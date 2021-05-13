@@ -5,12 +5,9 @@ Date:       12 May 2021
 
 import pytest
 from datetime import datetime
-from typing import List, Dict, Union, Generator
-from dataclasses import dataclass
+from typing import List, Dict, Union
 
-from flask import Flask
 from flask.testing import Client
-from flask_sqlalchemy import SQLAlchemy
 
 from app import create_app, db, bcrypt
 from app.models import User
@@ -94,28 +91,25 @@ def client_factory(init_db) -> callable:
     :return: A factory function for creating a Flask Client object.
     """
 
-    def factory(size: int = 3, return_db: bool = False) -> Client:
+    def factory(size: int = 3) -> Client:
         """
         Creates and initialises a client object.
 
         :param size: The number of instance to add to the database for testing.
         :return: A Flask Client object.
         """
-        print(type(db))
         app = create_app("test")
 
         with app.test_client() as client:
-            with app.app_context() as ctx:
+            with app.app_context():
                 init_db(size=size)
-                # Pushes the application context to global scope for testing.
-                # ctx.push()
-                # if not return_db:
+
+                # Return context objects.
                 yield client, app, db, User
-                # else:
-                #     yield client, db
+
+                # Clean up database
                 db.session.remove()
                 db.drop_all()
-                # ctx.pop()
 
     return factory
 

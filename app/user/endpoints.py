@@ -50,7 +50,7 @@ class UserInfo:
         :return: A UserInfo object describing the new user.
         """
         # Convert to JSON if of type bytes.
-        if type(data) == bytes:
+        if isinstance(data, bytes):
             data = json.loads(data)
 
         return asdict(cls(

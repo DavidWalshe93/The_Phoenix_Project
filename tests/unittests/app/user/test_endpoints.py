@@ -87,11 +87,11 @@ def test_create_user(size, client_factory):
     res: Response = rig.client.post("/v1/user", data=data)
 
     with rig.app_context():
-        print(rig.User.query.all())
         # Assert a model entry has been created.
         user = rig.User.query.filter_by(email=user_data["email"]).first()
 
-    assert type(user) == rig.User
+    # Verify a user object was returned.
+    assert isinstance(user, rig.User)
 
     # Verify response matches expected.
     assert user.name == user_data.get("name")
@@ -99,5 +99,5 @@ def test_create_user(size, client_factory):
     # Test passwords have been hashed.
     assert user.password_hash != user_data.get("password")
     assert len(user.password_hash) == 94
-
+    # Verify status code.
     assert res.status_code == 201
