@@ -61,7 +61,7 @@ def test_get_users(size, client_factory, users):
 
 
 @pytest.mark.parametrize("size", [0, 1, 2, 3])
-def test_create_user(size, client_factory, users, crypt, user_model):
+def test_create_user(size, client_factory):
     """
     Validate a user is created with a POST to ~/v1/user.
 
@@ -91,13 +91,13 @@ def test_create_user(size, client_factory, users, crypt, user_model):
         # Assert a model entry has been created.
         user = rig.User.query.filter_by(email=user_data["email"]).first()
 
-    assert type(user) == user_model
+    assert type(user) == rig.User
 
     # Verify response matches expected.
     assert user.name == user_data.get("name")
     assert user.email == user_data.get("email")
     # Test passwords have been hashed.
-    assert user.password != user_data.get("password")
-    assert len(user.password) == 60
+    assert user.password_hash != user_data.get("password")
+    assert len(user.password_hash) == 94
 
     assert res.status_code == 201

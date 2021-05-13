@@ -13,7 +13,7 @@ from flask import jsonify, request
 from sqlalchemy.engine.row import Row
 
 from . import user
-from .. import db, bcrypt
+from .. import db
 from ..models.user import User
 
 logger = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ class UserInfo:
         return asdict(cls(
             name=data.get("name", None),
             email=data.get("email", None),
-            password=bcrypt.generate_password_hash(data.get("password", None)),
+            password=data.get("password", None),
             last_login=datetime.now()
         ))
 
