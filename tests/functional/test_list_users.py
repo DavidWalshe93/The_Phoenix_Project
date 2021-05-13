@@ -7,7 +7,7 @@ import json
 
 from flask import Response
 
-from tests.functional.utils import FlaskTestRig
+from tests.functional.utils import FlaskTestRig, login, basic_auth_header_token
 
 NUM_USERS = 3
 
@@ -42,26 +42,34 @@ def test_get_users_no_auth(client_factory):
     assert data == expected
     assert res.status_code == 401
 
-# def test_get_users_with_auth(client_factory, users):
-#     """
-#     Validate a list of all users is returned on a GET request to /users endpoint.
-#
-#     :endpoint:  ~/v1/user
-#     :method:    GET
-#     :params:    None
-#     :status:    200
-#     :response:  A list of user objects.
-#     """
-#     expected = users(size=NUM_USERS, datetime_as_string=True)
-#
-#     rig = FlaskTestRig.create(client_factory(size=NUM_USERS))
-#
-#     # Make request and gather response.
-#     res: Response = rig.client.get("/api/v1/users")
-#
-#     # Get JSON data returned.
-#     data = json.loads(res.data)
-#
-#     # Verify response matches expected.
-#     assert data == expected
-#     assert res.status_code == 200
+
+def test_get_users_with_auth(client_factory, users):
+    """
+    Validate a list of all users is returned on a GET request to /users endpoint.
+
+    :endpoint:  /api/v1/users
+    :method:    GET
+    :auth:      True
+    :params:    None
+    :status:    200
+    :response:  A list of user objects.
+    """
+    expected = users(size=NUM_USERS, datetime_as_string=True)
+
+    rig = FlaskTestRig.create(client_factory(size=NUM_USERS))
+
+    user = users(1, include_password=True)[0]
+
+    token = login(rig.client, user)
+
+    print("AUTH", basic_auth_header_token(token))
+
+    # Make request and gather response.
+    res: Response = rig.client.get("/api/v1/users", headers=basic_auth_header_token(token))
+
+    # Get JSON data returned.
+    data = json.loads(res.data)
+
+    # Verify response matches expected.
+    assert data == expected
+    assert res.status_code == 200
