@@ -10,9 +10,10 @@ from flask_restful import Resource, reqparse
 from flask_login import login_required, login_user
 
 from .. import db
-from ..api.utils import UserInfo
+from ..api.utils import UserFactory
 from ..models.user import User
 from .authentication import auth
+from .errors import bad_request
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,7 @@ class UsersAPI(Resource):
         results = User.query.with_entities(User.name, User.email, User.last_login).all()
 
         # Unpack result Row objects into UserInfo objects for response.
-        data = [UserInfo.get(row) for row in results]
+        data = [UserFactory.get(row) for row in results]
 
         return make_response(jsonify(data), 200)
 
@@ -65,14 +66,12 @@ class RegisterAPI(Resource):
         # Get request JSON body (as bytes)
         req_json = register_parser.parse_args()
 
-        from pprint import pprint
-        pprint(req_json)
+        # Use registration factory to create new User object.
+        new_user: User = UserFactory.create_user_from(req_json)
 
-        # Use factory to create new user information dictionary.
-        user_info: dict = UserInfo.create(req_json)
-
-        # Create new user object.
-        new_user = User(**user_info)
+        # User already exists, return a 400 error.
+        if new_user.already_exists:
+            return bad_request("Email already exists. Try logging in instead.")
 
         # Add new user to database.
         db.session.add(new_user)

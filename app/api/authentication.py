@@ -9,6 +9,7 @@ from flask import g
 from flask_httpauth import HTTPBasicAuth
 
 from ..models import User
+from .errors import unauthorized
 
 auth = HTTPBasicAuth()
 
@@ -45,4 +46,4 @@ def verify_password(email: str, password: str) -> bool:
 @auth.error_handler
 def auth_error():
     """Callback for failed authentication requests."""
-    return unauthorized("Invalid user credentials")
+    return unauthorized("Invalid user credentials to access resource.")

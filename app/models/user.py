@@ -76,6 +76,18 @@ class User(UserMixin, db.Model):
     # Helpers
     # ======================================================================================================================
 
+    @property
+    def already_exists(self) -> bool:
+        """
+        Check if the User already exists in the database.
+
+        :return: Whether the User already exists.
+        """
+        if self.query.filter_by(email=self.email):
+            return True
+        else:
+            return False
+
     def as_dict(self) -> dict:
         """
         Returns dictionary representation of object, useful for JSON encoding.

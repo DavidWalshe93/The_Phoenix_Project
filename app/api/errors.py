@@ -18,10 +18,23 @@ def make_error(msg: str, error: str) -> Response:
     :param error: The text description of the error.
     :return: A flask error response object.
     """
-    response: Response = jsonify({
+    return jsonify({
         "error": error,
         "message": msg,
     })
+
+
+def bad_request(msg: str) -> Response:
+    """
+    Creates and returns an error response for a 400 - Bad Request error.
+
+    :param msg: The message to include in the error.
+    :return: The 400 Error Response.
+    """
+    res = make_error(msg, "Bad Request")
+    res.status_code = 400
+
+    return res
 
 
 def unauthorized(msg: str) -> Response:
@@ -31,7 +44,20 @@ def unauthorized(msg: str) -> Response:
     :param msg: The message to include in the error.
     :return: The 401 Error Response.
     """
-    res = make_error(msg, "unauthorised")
+    res = make_error(msg, "Unauthorised")
     res.status_code = 401
+
+    return res
+
+
+def internal_server_error(msg: str) -> Response:
+    """
+    Creates and returns an error response for a 500 - Internal Server Error error.
+
+    :param msg: The message to include in the error.
+    :return: The 500 Error Response.
+    """
+    res = make_error(msg, "Internal Server Error")
+    res.status_code = 500
 
     return res
