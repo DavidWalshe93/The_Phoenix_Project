@@ -71,6 +71,7 @@ class RegisterAPI(Resource):
 
         # User already exists, return a 400 error.
         if new_user.already_exists:
+            logger.error(f"Bad Request - Duplicate email when trying to register.")
             return bad_request("Email already exists. Try logging in instead.")
 
         # Add new user to database.
@@ -78,7 +79,8 @@ class RegisterAPI(Resource):
         db.session.commit()
 
         login_user(new_user)
-
+        
+        logger.info(f"New user created.")
         return make_response(new_user.generate_auth_token(3600), 201)
 
 
