@@ -20,6 +20,9 @@ def users() -> callable:
 
     :return: A callable for creating a list of user objects.
     """
+    _names = ["John Smith", "Mary Murphy", "Mike Coleman", "Susan Scot", "Mark Santos", "Jane Doe"]
+    # Create a generator of names.
+    _names = (name for name in _names)
 
     def factory(size: int = 3, datetime_as_string: bool = False, include_password: bool = False) -> List[Dict[str, Union[str, datetime]]]:
         """
@@ -29,11 +32,16 @@ def users() -> callable:
         :return: A list of user dictionaries.
         """
         # Return only the number of instances requested by the user.
-        names = [name for idx, name in enumerate(["John Smith", "Mary Murphy", "Mike O'Shea"]) if idx < size]
+        try:
+            names = [next(_names) for _ in range(size)]
+            print(names)
+        except StopIteration as err:
+            raise StopIteration("No more names to yield in names generator.")
 
         # Generate 'last_login" times.
         epoch = 1620766488  # Tue, 11 May 2021 21:54:48 GMT
-        times = [datetime.fromtimestamp(epoch + delta) for delta in [0, 60, 120]]
+        deltas = [t for t in range(0, 60 * len(names), 60)]
+        times = [datetime.fromtimestamp(epoch + delta) for delta in deltas]
 
         # Convert time into human readable text if required for comparisons.
         if datetime_as_string:

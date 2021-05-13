@@ -6,7 +6,7 @@ Date:       11 May 2021
 import logging
 from dataclasses import dataclass
 
-from flask import jsonify, make_response, Blueprint
+from flask import jsonify, make_response, Blueprint, current_app
 from flask_restful import Resource, reqparse
 from flask_login import login_required, login_user
 
@@ -88,7 +88,8 @@ class RegisterAPI(Resource):
         login_user(new_user)
 
         logger.info(f"New user created.")
-        return make_response(new_user.generate_auth_token(3600), 201)
+        expiry = current_app.config.TOKEN_EXPIRY
+        return make_response(new_user.generate_auth_token(expiry), 201)
 
 
 login_parser = reqparse.RequestParser()
@@ -119,7 +120,8 @@ class LoginAPI(Resource):
         login_user(current_user)
 
         logger.info(f"User {current_user.id} logged in.")
-        return make_response(current_user.generate_auth_token(3600), 200)
+        expiry = current_app.config["TOKEN_EXPIRY"]
+        return make_response(current_user.generate_auth_token(expiry), 200)
 
 # @user.route("/api/v1/user", methods=["POST"])
 # def register():

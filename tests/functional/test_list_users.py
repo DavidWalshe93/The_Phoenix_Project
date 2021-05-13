@@ -55,6 +55,7 @@ def test_get_users_with_auth(client_factory, users):
     :response:  A list of user objects.
     """
     expected = users(size=NUM_USERS, datetime_as_string=True)
+    print(expected)
 
     rig = FlaskTestRig.create(client_factory(size=NUM_USERS))
 
