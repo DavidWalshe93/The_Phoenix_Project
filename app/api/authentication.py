@@ -11,7 +11,6 @@ from flask_httpauth import HTTPBasicAuth
 from ..models import User
 from .errors import unauthorized
 
-# auth = HTTPBasicAuth()
 auth = HTTPBasicAuth()
 
 logger = logging.getLogger(__name__)
