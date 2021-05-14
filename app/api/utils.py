@@ -9,6 +9,7 @@ import json
 from dataclasses import dataclass, asdict
 from typing import Dict, Any
 
+from flask_restful.reqparse import RequestParser
 from sqlalchemy.engine.row import Row
 
 from ..models import User
@@ -56,3 +57,17 @@ class UserUtils:
             password=data.get("password", None),
             last_login=datetime.now()
         )))
+
+
+def create_request_parser(*args) -> RequestParser:
+    """
+    Factory function for creating a Request Parser object.
+
+    :return: The generated Request Parser object.
+    """
+    parser = RequestParser()
+
+    for arg in args:
+        parser.add_argument(arg)
+
+    return parser

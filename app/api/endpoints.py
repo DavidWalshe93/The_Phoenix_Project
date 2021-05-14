@@ -56,41 +56,7 @@ class UsersAPI(Resource):
         return make_response(jsonify(data), 200)
 
 
-register_parser = reqparse.RequestParser()
-register_parser.add_argument("name")
-register_parser.add_argument("email")
-register_parser.add_argument("password")
 
-
-class RegisterAPI(Resource):
-
-    def post(self):
-        """
-        Creates a user object in the database and returns an authentication token to the client.
-
-        :return 201: User registration successful, user added to DB, return Auth token.
-        :return 400: User registration failure - email already in use.
-        """
-        # Get request JSON body (as bytes)
-        req_json = register_parser.parse_args()
-
-        # Create new User object from request body to check Database against.
-        new_user: User = UserUtils.create_user_from(req_json)
-
-        # User already exists, return a 400 error.
-        if new_user.already_exists:
-            logger.error(f"Bad Request - Duplicate email when trying to register.")
-            return bad_request("Email already exists. Try logging in instead.")
-
-        # Add new user to database.
-        db.session.add(new_user)
-        db.session.commit()
-
-        login_user(new_user)
-
-        logger.info(f"New user created.")
-        expiry = current_app.config["TOKEN_EXPIRY"]
-        return make_response(new_user.generate_auth_token(expiry), 201)
 
 
 

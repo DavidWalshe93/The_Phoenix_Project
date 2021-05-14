@@ -12,22 +12,9 @@ from flask_login import login_user
 
 from app.models.user import User
 from app.api.errors import bad_request
+from app.api.utils import create_request_parser
 
 logger = logging.getLogger(__name__)
-
-
-def create_request_parser(*args) -> RequestParser:
-    """
-    Factory function for creating a Request Parser object.
-
-    :return: The generated Request Parser object.
-    """
-    parser = RequestParser()
-
-    for arg in args:
-        parser.add_argument(arg)
-
-    return parser
 
 
 class LoginAPI(Resource):
