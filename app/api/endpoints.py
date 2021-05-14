@@ -7,8 +7,9 @@ import logging
 from dataclasses import dataclass
 
 from flask import jsonify, make_response, Blueprint, current_app
-from flask_restful import Resource, reqparse
 from flask_login import login_required, login_user
+from flask_restful import Resource, reqparse
+
 
 from .. import db
 from ..api.utils import UserUtils
@@ -92,36 +93,7 @@ class RegisterAPI(Resource):
         return make_response(new_user.generate_auth_token(expiry), 201)
 
 
-login_parser = reqparse.RequestParser()
-login_parser.add_argument("email")
-login_parser.add_argument("password")
 
-
-class LoginAPI(Resource):
-
-    def post(self):
-        """
-        Logs in a user and returns a authentication token.
-
-        :return 200: User sign-in successful, return Auth token.
-        :return 400: User sign-in failure, account doesnt exist.
-        """
-        # Get request JSON body (as bytes)
-        req_json = register_parser.parse_args()
-
-        # Create new User object from request body to check Database against.
-        current_user = User.query.filter_by(email=req_json.email).first()
-
-        # User does not exist, return a 400 error.
-        if not current_user or not current_user.already_exists:
-            logger.error(f"Bad Request - User does not have an account.")
-            return bad_request("Account does not exist, try registering instead.")
-
-        login_user(current_user)
-
-        logger.info(f"User {current_user.id} logged in.")
-        expiry = current_app.config["TOKEN_EXPIRY"]
-        return make_response(current_user.generate_auth_token(expiry), 200)
 
 # @user.route("/api/v1/user", methods=["POST"])
 # def register():
