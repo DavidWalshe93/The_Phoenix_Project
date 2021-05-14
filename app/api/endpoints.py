@@ -10,7 +10,6 @@ from flask import jsonify, make_response, Blueprint, current_app
 from flask_login import login_required, login_user
 from flask_restful import Resource, reqparse
 
-
 from .. import db
 from ..api.utils import UserUtils
 from ..models.user import User
@@ -23,19 +22,6 @@ logger = logging.getLogger(__name__)
 def get_blueprint():
     """API Blueprint factory."""
     return Blueprint("api", __name__)
-
-
-class UserAPI(Resource):
-
-    def get(self):
-        pass
-
-    @login_required
-    def put(self):
-        pass
-
-    def delete(self):
-        pass
 
 
 class UsersAPI(Resource):
@@ -54,12 +40,6 @@ class UsersAPI(Resource):
         data = [UserUtils.dict_from_user_row(row) for row in results]
 
         return make_response(jsonify(data), 200)
-
-
-
-
-
-
 
 # @user.route("/api/v1/user", methods=["POST"])
 # def register():
