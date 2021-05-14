@@ -5,7 +5,7 @@ Date:       13 May 2021
 
 import logging
 
-from flask import g
+from flask import g  # Flask globals
 from flask_httpauth import HTTPBasicAuth
 
 from ..models import User
