@@ -1,4 +1,12 @@
 [run]
-include = */app/*, */configurations/*
-omit = *migrations*, *tests*
 branch = true
+source = app, configurations
+
+[paths]
+source =
+    app
+    configurations
+
+[report]
+precision = 2
+
