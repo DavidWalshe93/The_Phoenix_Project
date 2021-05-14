@@ -18,6 +18,12 @@ logger = logging.getLogger(__name__)
 
 @auth.verify_password
 def verify_password(email_or_token: str, password: str) -> bool:
+    """Top level function used for decorator, implementation found in "_verify_password"."""
+    # Secondary method used to simplify unit testing.
+    return _verify_password(email_or_token, password)
+
+
+def _verify_password(email_or_token: str, password: str) -> bool:
     """
     Verifies a user's email and password combination or validates a authentication token assigned by the user.
 
