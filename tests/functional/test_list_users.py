@@ -58,8 +58,8 @@ def test_get_users_with_auth(client_factory, make_users):
 
     rig = FlaskTestRig.create(client_factory(expected))
 
+    # Acquire login token for first user.
     user = expected[0]
-
     token = login(rig.client, user)
 
     # Make request and gather response.
