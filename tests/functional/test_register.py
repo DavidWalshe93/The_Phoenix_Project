@@ -11,7 +11,8 @@ from flask import Response
 from tests.functional.utils import FlaskTestRig, login, basic_auth_header_token, datetime_as_string
 
 
-def test_register_pass(client_factory, make_users):
+@FlaskTestRig.setup_app(n_users=3)
+def test_register_pass(client_factory, make_users, **kwargs):
     """
     Test successful registration operation for new user.
 
@@ -22,13 +23,12 @@ def test_register_pass(client_factory, make_users):
     :status:    201
     :response:  A new authentication token.
     """
-    existing_users = make_users(1, exclude_password=False)
-    new_users = make_users(1, exclude_password=False)
+    rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
-    rig = FlaskTestRig.create(client_factory(existing_users))
+    new_user = rig.create_new_user(keep_password=True)
 
     # Make request and gather response.
-    res: Response = rig.client.post("/api/v1/user/register", data=new_users[0])
+    res: Response = rig.client.post("/api/v1/user/register", data=new_user)
 
     # Get JSON data returned.
     data = json.loads(res.data)
@@ -38,7 +38,8 @@ def test_register_pass(client_factory, make_users):
     assert res.status_code == 201
 
 
-def test_register_fail(client_factory, make_users):
+@FlaskTestRig.setup_app(n_users=3)
+def test_register_fail(client_factory, make_users, **kwargs):
     """
     Verifies an 400 error occurs if a current user tries to re-register an account.
     
@@ -49,17 +50,17 @@ def test_register_fail(client_factory, make_users):
     :status:    400
     :response:  An error message stating the user already has an account for the email used.
     """
+    rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
+
     expected = {
         "error": "Bad Request",
         "message": "Email already exists. Try logging in instead."
     }
 
-    existing_users = make_users(1, exclude_password=False)
-
-    rig = FlaskTestRig.create(client_factory(existing_users))
+    current_user = rig.get_first_user(keep_password=True)
 
     # Make request and gather response.
-    res: Response = rig.client.post("/api/v1/user/register", data=existing_users[0])
+    res: Response = rig.client.post("/api/v1/user/register", data=current_user)
 
     # Get JSON data returned.
     data = json.loads(res.data)

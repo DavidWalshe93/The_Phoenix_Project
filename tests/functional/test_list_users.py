@@ -13,7 +13,8 @@ from tests.functional.utils import FlaskTestRig, login, basic_auth_header_token,
 NUM_USERS = 3
 
 
-def test_get_users_no_auth(client_factory):
+@FlaskTestRig.setup_app(n_users=3)
+def test_get_users_no_auth(client_factory, make_users, **kwargs):
     """
     Validate an Unauthorised error is returned when attempting to list of
     all users on a GET request to /api/v1/users endpoint without being
@@ -26,12 +27,12 @@ def test_get_users_no_auth(client_factory):
     :status:    401
     :response:  An unauthorised error.
     """
+    rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
+
     expected = {
         "error": "Unauthorised",
         "message": "Invalid user credentials to access resource."
     }
-
-    rig = FlaskTestRig.create(client_factory())
 
     # Make request and gather response.
     res: Response = rig.client.get("/api/v1/users")
@@ -44,7 +45,8 @@ def test_get_users_no_auth(client_factory):
     assert res.status_code == 401
 
 
-def test_get_users_with_auth(client_factory, make_users):
+@FlaskTestRig.setup_app(n_users=3)
+def test_get_users_with_auth(client_factory, make_users, **kwargs):
     """
     Validate a list of all users is returned on a GET request to /users endpoint.
 
@@ -55,12 +57,12 @@ def test_get_users_with_auth(client_factory, make_users):
     :status:    200
     :response:  A list of user objects.
     """
-    expected = make_users(size=50)
+    rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
-    rig = FlaskTestRig.create(client_factory(expected))
+    expected = rig.get_current_users()
 
     # Acquire login token for first user.
-    user = expected[0]
+    user = rig.get_first_user(keep_password=True)
     token = login(rig.client, user)
 
     # Make request and gather response.

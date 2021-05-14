@@ -32,10 +32,10 @@ def make_users(load_users) -> callable:
     # Create a generator of users.
     _users = (user for user in users)
 
-    def factory(size: int = 3, exclude_password: bool = True) -> List[Dict[str, Union[str, datetime]]]:
+    def factory(size: int = 3, keep_password: bool = True) -> List[Dict[str, Union[str, datetime]]]:
         """
         :param size: The number of User dictionary instances to return.
-        :param exclude_password: Exclude user passwords in returned dictionary objects.
+        :param keep_password: Include user passwords in returned dictionary objects.
         :return: A list of user dictionaries.
         """
         # Return only the number of instances requested by the user.
@@ -53,7 +53,7 @@ def make_users(load_users) -> callable:
         user_batch = [{**user, "last_login": time} for user, time in zip(user_batch, times)]
 
         # Remove user password information if required.
-        if exclude_password:
+        if not keep_password:
             _ = [user.pop("password") for user in user_batch]
 
         return user_batch

@@ -4,10 +4,12 @@ Date:       13 May 2021
 """
 
 import json
-from typing import Generator, Dict
-from dataclasses import dataclass
+from typing import Generator, Dict, Tuple, List, Any
+from dataclasses import dataclass, field
 from contextlib import contextmanager
 from datetime import datetime
+from functools import wraps
+from copy import deepcopy
 
 from requests.auth import _basic_auth_str
 from flask import Flask, Response
@@ -19,26 +21,44 @@ from app.models import User
 
 @dataclass
 class FlaskTestRig:
+    """
+    Flask application testing rig. Uses to encapsulate helpful datapoints required for testing
+    under the one namespace.
+
+    :param client: The Flask Client for running requests off endpoints.
+    :param app: The Flask Application instance.
+    :param db: The SQLAlchemy database instance.
+    :param User: The User model reference.
+    :param db_entries: A list of dictionaries describing the current state of the database.
+    :param make_users: A callable used to create new users during tests if required.
+    """
     client: Client
     app: Flask
     db: SQLAlchemy
     User: User
+    db_entries: List[Dict[str, Any]] = field(default_factory=[])
+    make_users: callable = None
 
     @classmethod
-    def create(cls, generator: Generator):
+    def create(cls, client_factory: callable, make_users: callable, n_users: int = 3):
         """
         Factory method to create a FlaskTestRig from a generator.
 
-        :param generator: A generator of one item, holding the flask test context.
+        :param client_factory: A generator of one item, holding the flask test context.
         :return: A FlaskTestRig object.
         """
+        users = make_users(n_users, keep_password=True)
+        generator = client_factory(users)
+
         client, app, db, user = next(generator)
 
         return cls(
             client=client,
             app=app,
             db=db,
-            User=user
+            User=user,
+            db_entries=users,
+            make_users=make_users
         )
 
     @contextmanager
@@ -50,6 +70,72 @@ class FlaskTestRig:
         """
         with self.app.app_context() as ctx:
             yield ctx
+
+    @staticmethod
+    def extract_rig_from_kwargs(key_word_args: dict) -> object:
+        """
+        Extracts the FlaskTestRig object from the kwargs of a test.
+
+        :param key_word_args: The key-word argument dictionary containing the FlaskTestRig object.
+        :return: The extracted FlaskTestRig object.
+        """
+        return key_word_args["rig"]
+
+    def get_current_users(self, keep_password: bool = False) -> List[Dict[str, Any]]:
+        """
+        Returns a list of dictionaries describing all users in the current Database.
+
+        :param keep_password: Keep the password field in the returned user records.
+        :return: A list of dictionaries describing all users in the current Database.
+        """
+        users = deepcopy(self.db_entries)
+
+        if not keep_password:
+            _ = [user.pop("password") for user in users]
+
+        return users
+
+    def get_first_user(self, keep_password: bool = False) -> Dict[str, Any]:
+        """
+        Returns the first existing user in the db_entries for this Flask application session.
+
+        :param keep_password: Keep the password field in the returned user records.
+        :return: A dictionary describing a current User.
+        """
+        return self.get_current_users(keep_password=keep_password)[0]
+
+    def create_new_user(self, keep_password: bool = False) -> Dict[str, Any]:
+        """
+        Returns the newly generated user not in the current db of the application.
+
+        :param keep_password: Keep the password field in the returned user records.
+        :return: A dictionary describing a new User.
+        """
+        return self.make_users(1, keep_password=keep_password)[0]
+
+    @staticmethod
+    def setup_app(n_users: int = 3):
+        """
+        Sets up a REST API test by creating a FlaskTestRig object and adding users to the test database.
+
+        :param n_users: The number of users to add to the database.
+        :return: The
+        """
+
+        def _setup_app(func):
+            @wraps(func)
+            def setup_app_wrapper(*args, **kwargs):
+                # Pull setup functions from kwargs
+                client_factory = kwargs["client_factory"]
+                make_users = kwargs["make_users"]
+
+                rig = FlaskTestRig.create(client_factory=client_factory, make_users=make_users, n_users=n_users)
+
+                return func(rig=rig, **kwargs)
+
+            return setup_app_wrapper
+
+        return _setup_app
 
 
 def login(client: Client, user: dict) -> str:
@@ -67,11 +153,10 @@ def login(client: Client, user: dict) -> str:
                                      ))
 
     token = json.loads(response.data).get("token")
-    print(token)
+
+    # Assert token was acquired before continuing testing.
     assert response.status_code == 200
     assert token != None
-
-    print(token)
 
     return token
 
