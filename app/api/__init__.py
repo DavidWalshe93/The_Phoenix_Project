@@ -7,3 +7,4 @@ from .endpoints import get_blueprint
 from .v1.ep.login import LoginAPI
 from .v1.ep.register import RegisterAPI
 from .v1.ep.user import UserAPI
+from .v1.ep.users import UsersAPI
