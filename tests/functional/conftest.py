@@ -16,7 +16,7 @@ from app.models import User
 
 @pytest.fixture(scope="session")
 def load_users():
-    with open("./data/users.yml") as fh:
+    with open("./tests/data/users.yml") as fh:
         return yaml.safe_load(fh)
 
 
