@@ -3,6 +3,7 @@ Author:     David Walshe
 Date:       13 May 2021
 """
 
+import pytest
 import json
 
 from flask import Response

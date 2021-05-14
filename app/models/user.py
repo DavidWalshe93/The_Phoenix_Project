@@ -67,7 +67,9 @@ class User(UserMixin, db.Model):
         """
         s = Serializer(current_app.config["SECRET_KEY"], expires_in=expiration)
 
-        return dict(token=s.dumps({"id": self.id}).decode("utf8"))
+        return dict(token=s.dumps({"id": self.id,
+                                   "email": self.email,
+                                   "password": self.password_hash}).decode("utf8"))
 
     @staticmethod
     def verify_auth_token(token) -> Union[object, None]:
@@ -77,13 +79,20 @@ class User(UserMixin, db.Model):
         :param token: The token to verify.
         :return: Returns the user the token is for if the token is valid, else returns None.
         """
-        s = Serializer(current_app.config["SECRET"])
+        s = Serializer(current_app.config["SECRET_KEY"])
         try:
             data = s.loads(token)
         except:
             return None
 
-        return User.query.get(data['id'])
+        # Get the identified user.
+        user: User = User.query.get(data['id'])
+
+        # Ensure the user's details have not been altered since the token was generated.
+        if user.email == data["email"] and user.password_hash == data["password"]:
+            return user
+        else:
+            return None
 
     # ======================================================================================================================
     # Helpers

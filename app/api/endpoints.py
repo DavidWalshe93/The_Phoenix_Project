@@ -88,7 +88,7 @@ class RegisterAPI(Resource):
         login_user(new_user)
 
         logger.info(f"New user created.")
-        expiry = current_app.config.TOKEN_EXPIRY
+        expiry = current_app.config["TOKEN_EXPIRY"]
         return make_response(new_user.generate_auth_token(expiry), 201)
 
 

@@ -4,34 +4,40 @@ Date:       13 May 2021
 """
 
 import pytest
+import json
+
+from flask import Response
+
+from tests.functional.utils import FlaskTestRig, login, basic_auth_header_token, datetime_as_string
 
 
-def test_get_users_no_auth(client_factory, make_users):
+def test_register_pass(client_factory, make_users):
     """
-    Validate an Unauthorised error is returned when attempting to list of
-    all users on a GET request to /api/v1/users endpoint without being
-    authenticated.
+    Test successful registration operation for new user.
 
-    :endpoint:  /api/v1/users
+    :endpoint:  /api/v1/user/register
     :method:    POST
     :auth:      False
-    :params:    None
-    :status:    401
-    :response:  An unauthorised error.
+    :params:    New user email/password.
+    :status:    201
+    :response:  A new authentication token.
     """
     expected = {
-        "error": "Unauthorised",
-        "message": "Invalid user credentials to access resource."
+        "error": "Bad Request",
+        "message": "Email already exists. Try logging in instead."
     }
 
-    rig = FlaskTestRig.create(client_factory(size=NUM_USERS))
+    existing_users = make_users(1, exclude_password=False)
+    new_users = make_users(1, exclude_password=False)
+
+    rig = FlaskTestRig.create(client_factory(existing_users))
 
     # Make request and gather response.
-    res: Response = rig.client.get("/api/v1/users")
+    res: Response = rig.client.post("/api/v1/user/register", data=new_users[0])
 
     # Get JSON data returned.
     data = json.loads(res.data)
 
-    # Verify response matches expected.
-    assert data == expected
-    assert res.status_code == 401
+    # Verify token was returned to client.
+    assert data.get("token") != None
+    assert res.status_code == 201
