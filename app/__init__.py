@@ -84,14 +84,14 @@ def setup_api(app: Flask) -> Flask:
     :return: The
     """
     # Initialise and route Flask-RESTful API for User.
-    from .api import get_blueprint, UserAPI, UsersAPI, LoginAPI, RegisterAPI
+    from .api import get_blueprint, UserApiV1, UsersApiV1, LoginApiV1, RegisterApiV1
     api_bp = get_blueprint()
     api = Api(api_bp)
 
     # Setup API Routes/Endpoints.
-    api.add_resource(UsersAPI, "/api/v1/users", endpoint="users")
-    api.add_resource(RegisterAPI, "/api/v1/user/register", endpoint="register")
-    api.add_resource(LoginAPI, "/api/v1/user/login", endpoint="login")
+    api.add_resource(UsersApiV1, "/api/v1/users", endpoint="users")
+    api.add_resource(RegisterApiV1, "/api/v1/user/register", endpoint="register")
+    api.add_resource(LoginApiV1, "/api/v1/user/login", endpoint="login")
 
     app.register_blueprint(api_bp)
 

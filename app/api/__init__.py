@@ -3,8 +3,11 @@ Author:     David Walshe
 Date:       13 May 2021
 """
 
-from .endpoints import get_blueprint
-from .v1.ep.login import LoginAPI
-from .v1.ep.register import RegisterAPI
-from .v1.ep.user import UserAPI
-from .v1.ep.users import UsersAPI
+from flask import Blueprint
+
+from .v1 import LoginApiV1, RegisterApiV1, UserApiV1, UsersApiV1
+
+
+def get_blueprint():
+    """API Blueprint factory."""
+    return Blueprint("api", __name__)
