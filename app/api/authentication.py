@@ -33,13 +33,13 @@ def verify_password(email_or_token: str, password: str) -> bool:
 
     if password == "":
         logger.debug(f"Authorized with Token.")
-        return token_auth(token=email_or_token)
+        return auth_with_token(token=email_or_token)
 
     logger.debug(f"Authorized with Email/Password.")
-    return password_auth(email=email_or_token, password=password)
+    return auth_with_password(email=email_or_token, password=password)
 
 
-def token_auth(token: str) -> bool:
+def auth_with_token(token: str) -> bool:
     """
     Setup the session with token authentication.
 
@@ -52,7 +52,7 @@ def token_auth(token: str) -> bool:
     return g.current_user is not None
 
 
-def password_auth(email: str, password: str) -> bool:
+def auth_with_password(email: str, password: str) -> bool:
     """
     Setup the session with email/password authentication.
 
