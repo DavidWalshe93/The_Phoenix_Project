@@ -11,7 +11,7 @@ from flask_restful import Resource
 logger = logging.getLogger(__name__)
 
 
-class UserAPI(Resource):
+class UserApiV1(Resource):
 
     def get(self):
         pass

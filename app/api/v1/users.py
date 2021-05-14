@@ -16,7 +16,7 @@ from app.api.authentication import auth
 logger = logging.getLogger(__name__)
 
 
-class UsersAPI(Resource):
+class UsersApiV1(Resource):
 
     @auth.login_required
     def get(self):

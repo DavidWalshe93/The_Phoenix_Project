@@ -17,7 +17,7 @@ from app.api.utils import create_request_parser
 logger = logging.getLogger(__name__)
 
 
-class LoginAPI(Resource):
+class LoginApiV1(Resource):
 
     def post(self):
         """
