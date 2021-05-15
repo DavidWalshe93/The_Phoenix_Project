@@ -4,7 +4,7 @@ Date:       13 May 2021
 """
 
 import json
-from typing import Generator, Dict, List, Any
+from typing import Dict, List, Any
 from dataclasses import dataclass, field
 from contextlib import contextmanager
 from datetime import datetime

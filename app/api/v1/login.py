@@ -37,7 +37,7 @@ class LoginApiV1(Resource):
 
         # User does not exist, return a 400 error.
         if not current_user or not current_user.already_exists:
-            logger.error(f"Bad Request - User does not have an account.")
+            logger.error("Bad Request - User does not have an account.")
             return bad_request("Account does not exist, try registering instead.")
 
         login_user(current_user)

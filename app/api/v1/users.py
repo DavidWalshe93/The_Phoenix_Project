@@ -18,8 +18,9 @@ logger = logging.getLogger(__name__)
 
 class UsersApiV1(Resource):
 
+    @staticmethod
     @auth.login_required
-    def get(self):
+    def get():
         """
         Gathers all users in the given database and returns them as the response.
 

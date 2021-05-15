@@ -82,7 +82,8 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config["SECRET_KEY"])
         try:
             data = s.loads(token)
-        except:
+        except Exception as err:
+            logger.debug(f"Could not load token: {err}")
             return None
 
         # Get the identified user.

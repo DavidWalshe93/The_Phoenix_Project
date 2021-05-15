@@ -7,7 +7,6 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-from app.models import User
 import app.api.authentication as sut
 
 

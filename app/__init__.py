@@ -5,7 +5,7 @@ Date:       10 May 2021
 
 import logging
 
-from flask import Flask, Blueprint
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_restful import Api

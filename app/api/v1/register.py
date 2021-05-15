@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 
 class RegisterApiV1(Resource):
 
-    def post(self):
+    @staticmethod
+    def post():
         """
         Creates a user object in the database and returns an authentication token to the client.
 
@@ -36,8 +37,9 @@ class RegisterApiV1(Resource):
 
         # User already exists, return a 400 error.
         if new_user.already_exists:
-            logger.error(f"Bad Request - Duplicate email when trying to register.")
-            return bad_request("Email already exists. Try logging in instead.")
+            logger.error("Bad Request - Duplicate email when trying to register.")
+            # Send back ambiguous message for security.
+            return bad_request("Login failed.")
 
         # Add new user to database.
         db.session.add(new_user)

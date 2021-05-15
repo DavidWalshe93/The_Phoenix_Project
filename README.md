@@ -7,17 +7,17 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/797fb534d7384d7eb18be57d82416a6d)](https://www.codacy.com/gh/DavidWalshe93/The_Phoenix_Project/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DavidWalshe93/The_Phoenix_Project&amp;utm_campaign=Badge_Grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-# Quickstart Guide
+## Quickstart Guide
 
-# Brief
+## Brief
 
-# Architecture
+## Architecture
 
-# Testing
+## Testing
 
-# CICD Pipeline
+## CICD Pipeline
 
-# References
+## References
 
 
 
