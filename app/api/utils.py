@@ -26,6 +26,7 @@ class UserUtils:
     email: str
     password: str
     last_login: datetime
+    role_id: int
 
     @staticmethod
     def dict_from_user_row(row: Row) -> Dict[str, Any]:
@@ -40,11 +41,12 @@ class UserUtils:
                     last_login=row.last_login)
 
     @classmethod
-    def create_user_from(cls, data: bytes) -> User:
+    def create_user_from(cls, data: bytes, is_admin: bool = False) -> User:
         """
         Factory method to create a User object for registration.
 
         :param data: The json data passed from a POST request.
+        :param is_admin: Is the user an admin.
         :return: A User object describing the new user.
         """
         # Convert to JSON if of type bytes.
@@ -55,7 +57,8 @@ class UserUtils:
             username=data.get("username", None),
             email=data.get("email", None),
             password=data.get("password", None),
-            last_login=datetime.now()
+            last_login=datetime.now(),
+            role_id=2 if is_admin else 1
         )))
 
 

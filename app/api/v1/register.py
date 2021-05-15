@@ -12,6 +12,7 @@ from app import db
 from app.models.user import User
 from app.api.errors import bad_request
 from app.api.utils import create_request_parser, UserUtils
+from app.api.authentication import verify_admin_password
 
 logger = logging.getLogger(__name__)
 
@@ -30,15 +31,16 @@ class RegisterApiV1(Resource):
 
         pprint(request.data)
 
-        parser = create_request_parser("username", "email", "password")
+        parser = create_request_parser("username", "email", "password", "admin_password")
 
         # Get request JSON body (as bytes)
         req_json = parser.parse_args()
 
-        pprint(req_json)
+        # Check if user is an admin.
+        is_admin = verify_admin_password(req_json.get("admin_password"))
 
         # Create new User object from request body to check Database against.
-        new_user: User = UserUtils.create_user_from(req_json)
+        new_user: User = UserUtils.create_user_from(req_json, is_admin=is_admin)
 
         # User already exists, return a 400 error.
         if new_user.already_exists:
@@ -50,6 +52,10 @@ class RegisterApiV1(Resource):
         db.session.add(new_user)
         db.session.commit()
 
-        logger.info("New user created.")
+        if is_admin:
+            logger.info("New admin created.")
+        else:
+            logger.info("New user created.")
+
         expiry = current_app.config["TOKEN_EXPIRY"]
         return make_response(new_user.generate_auth_token(expiry), 201)

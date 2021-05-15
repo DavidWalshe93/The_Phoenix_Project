@@ -4,11 +4,13 @@ Date:       13 May 2021
 """
 
 import logging
+import os
 from dataclasses import dataclass, field
 
 from flask import g, current_app  # Flask globals
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from itsdangerous import TimedJSONWebSignatureSerializer as JWS
+from werkzeug.security import check_password_hash
 
 from ..models import User
 from .errors import unauthorized
@@ -116,12 +118,28 @@ def token_auth_error():
 
 @basic_auth.get_user_roles
 def basic_auth_get_user_roles(user):
+    """Return the current users role from the database for username/password holders."""
     return user.get_roles()
 
 
 @token_auth.get_user_roles
 def token_auth_get_user_roles(user):
+    """Return the current users role from the database for token holders."""
     return user.get_roles()
+
+
+def verify_admin_password(password: str) -> bool:
+    """
+    Authenticates if an admin password is actually meets spec.
+
+    :param password: The password for
+    :return:
+    """
+    # Ensure password is a string before checking.
+    if not isinstance(password, str):
+        return False
+
+    return check_password_hash(current_app.config["ADMIN_SECRET_KEY"], password)
 
 
 class Access:

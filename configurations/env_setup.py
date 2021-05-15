@@ -5,6 +5,7 @@ Date:       10 May 2021
 
 import os
 import logging
+from werkzeug.security import generate_password_hash
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ class Config:
     LOGGER_CONFIG = os.path.join(BASE_DIR, "configurations", "logger", "prod_logger.yml")
     # Set secret key for flask-login sessions
     SECRET_KEY = os.environ.get("SECRET_KEY")
-    ADMIN_PASSWORD = os.environ.get("ADMIN_SECRET_KEY")
+    ADMIN_SECRET_KEY = generate_password_hash(os.environ.get("ADMIN_SECRET_KEY"))
     TOKEN_EXPIRY = 3600  # 1 Hour
 
     @classmethod
