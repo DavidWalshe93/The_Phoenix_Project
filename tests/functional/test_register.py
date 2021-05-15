@@ -53,7 +53,7 @@ def test_register_fail(client_factory, make_users, **kwargs):
 
     expected = {
         "error": "Bad Request",
-        "message": "Email already exists. Try logging in instead."
+        "message": "Login failed."
     }
 
     current_user = rig.get_first_user(keep_password=True)
