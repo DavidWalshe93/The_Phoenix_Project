@@ -22,7 +22,7 @@ class UserApiV1(Resource):
     @auth.login_required
     def get(self):
         """
-        Returns the current users information.
+        Returns the current user's information.
 
         :return 200: The current user's information.
         :return 401: Bad user credentials.
@@ -73,8 +73,19 @@ class UserApiV1(Resource):
         db.session.add(user)
         db.session.commit()
 
-        return make_response(data, 204)
+        return make_response({}, 204)
 
     @auth.login_required
     def delete(self):
-        pass
+        """
+        Deletes the current user from the system.
+
+        :return 204: User was updated.
+        :return 401: Bad user credentials.
+        """
+        user: User = auth.current_user()
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return make_response({}, 204)

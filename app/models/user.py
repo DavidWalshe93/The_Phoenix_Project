@@ -87,6 +87,10 @@ class User(db.Model):
         # Get the identified user.
         user: User = User.query.filter_by(email=email).first()
 
+        # If no matching user is returned.
+        if user is None:
+            return None
+
         # Ensure the user's details have not been altered since the token was generated.
         if user.email == email and user.password_hash == password_hash:
             return user
