@@ -20,7 +20,7 @@ class Config:
     LOGGER_CONFIG = os.path.join(BASE_DIR, "configurations", "logger", "prod_logger.yml")
     # Set secret key for flask-login sessions
     SECRET_KEY = os.environ.get("SECRET_KEY")
-    SECRET = SECRET_KEY
+    ADMIN_PASSWORD = os.environ.get("ADMIN_SECRET_KEY")
     TOKEN_EXPIRY = 3600  # 1 Hour
 
     @classmethod

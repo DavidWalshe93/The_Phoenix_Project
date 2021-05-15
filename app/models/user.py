@@ -26,7 +26,7 @@ class User(db.Model):
     email = db.Column(db.String, unique=True)
     password_hash = db.Column(db.String)
     last_login = db.Column(db.DateTime)
-    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
+    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"), default=1)
 
     # ======================================================================================================================
     # Password Handling
