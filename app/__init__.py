@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 # Construct Flask extensions, initialise in factory function.
 db = SQLAlchemy()
-login_manager = LoginManager()
 
 
 def create_app(config_name: str = "dev") -> Flask:
@@ -31,6 +30,8 @@ def create_app(config_name: str = "dev") -> Flask:
     :param config_name: The name of the configuration to use. Default: "dev".
     :return: An application instance with the desired environment configuration settings.
     """
+    global jws
+
     app = Flask(__name__)
 
     app = setup_env(app, config_name)
@@ -71,7 +72,7 @@ def init_plugins(app: Flask) -> Flask:
     db.init_app(app)
     db.create_all(app=app)
     # Initialise LoginManager
-    login_manager.init_app(app=app)
+    # login_manager.init_app(app=app)
 
     return app
 

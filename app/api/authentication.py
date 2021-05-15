@@ -6,66 +6,35 @@ Date:       13 May 2021
 import logging
 from typing import Union
 
-from flask import g  # Flask globals
-from flask_httpauth import HTTPBasicAuth
+from flask import g, current_app  # Flask globals
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
+from itsdangerous import TimedJSONWebSignatureSerializer as JWS
 
 from ..models import User
 from .errors import unauthorized
 
-auth = HTTPBasicAuth()
-
-NOTSET = ""
+# Setup authentication handlers.
+basic_auth = HTTPBasicAuth()
+token_auth = HTTPTokenAuth("Bearer")
+auth = MultiAuth(basic_auth, token_auth)
 
 logger = logging.getLogger(__name__)
 
 
-@auth.verify_password
+@basic_auth.verify_password
 def verify_password(email_or_token: str, password: str) -> bool:
     """Top level function used for decorator, implementation found in "_verify_password"."""
     # Secondary method used to simplify unit testing.
     return _verify_password(email_or_token, password)
 
 
-def _verify_password(email_or_token: str, password: str) -> bool:
+def _verify_password(email: str, password: str) -> bool:
     """
-    Verifies a user's email and password combination or validates a authentication token assigned by the user.
+    Verifies a user's email and password combination for API access.
 
-    :param email_or_token: The user email to identify and check credentials for or an authentication token.
+    :param email: The user email to identify and check credentials for or an authentication token.
     :param password: The user password to verify.
     :return: True if credentials were correct else False.
-    """
-    # Check if the user supplied a email or a token, if anonymous user, return false.
-    if email_or_token == NOTSET:
-        logger.debug("No email or token provided.")
-        return False
-
-    if password == NOTSET:
-        logger.debug("Authorized with Token.")
-        return auth_with_token(token=email_or_token)
-
-    logger.debug("Authorized with Email/Password.")
-    return auth_with_password(email=email_or_token, password=password)
-
-
-def auth_with_token(token: str) -> bool:
-    """
-    Setup the session with token authentication.
-
-    :param token: The token supplied by the client.
-    :return: True if the token identified user is not None, else False.
-    """
-    set_globals(token_or_user=token)
-
-    return g.current_user is not None
-
-
-def auth_with_password(email: str, password: str) -> bool:
-    """
-    Setup the session with email/password authentication.
-
-    :param email: The email address supplied by the user.
-    :param password: The password supplied by the user.
-    :return: If the email/password combination is valid.
     """
     # Get the user information from the DB.
     user = User.query.filter_by(email=email).first()
@@ -74,30 +43,61 @@ def auth_with_password(email: str, password: str) -> bool:
     if not user:
         return False
 
-    # Add the user to the Flask globals for this session.
-    set_globals(token_or_user=user)
+    # Set flask global state.
+    set_globals(token_used=False)
+
+    logger.debug("Authorized with Email/Password.")
 
     # Check if the users password is correct.
     return user.verify_password(password=password)
 
 
-def set_globals(token_or_user: Union[str, User]) -> None:
+@token_auth.verify_token
+def verify_token(token: str):
+    """
+    Verifies a user's Bearer token for API access.
+
+    :param token: The token supplied by the client.
+    :return: True if the token identified user is not None, else False.
+    """
+    # Generate JWT signer.
+    jws = JWS(current_app.config["SECRET_KEY"], current_app.config["TOKEN_EXPIRY"])
+
+    try:
+        data = jws.loads(token)
+    except Exception as err:
+        logger.debug(f"{err}")
+        return False
+
+    if "email" in data:
+        return data["email"]
+
+    # Set flask global state.
+    set_globals(token_used=False)
+
+    logger.debug("Authorized with Token.")
+
+    return g.current_user is not None
+
+
+def set_globals(token_used: bool) -> None:
     """
     Sets the Flask globals depending on token or password usecase.
 
-    :param token_or_user: A User object or a token string.
+    :param token_used: Boolean to state if a token was used for authentication.
     """
-    if isinstance(token_or_user, str):
-        # Uses a token to id a User.
-        g.current_user = User.verify_auth_token(token_or_user)
-        g.token_used = True
-    else:
-        # User already ID'd from email
-        g.current_user = token_or_user
-        g.token_used = False
+    g.token_used = token_used
 
 
-@auth.error_handler
-def auth_error():
+@basic_auth.error_handler
+def basic_auth_error():
     """Callback for failed authentication requests."""
-    return unauthorized("Invalid user credentials to access resource.")
+    logger.debug(f"Basic authentication failed.")
+    return unauthorized("Invalid credentials.")
+
+
+@token_auth.error_handler
+def token_auth_error():
+    """Callback for failed authentication requests."""
+    logger.debug(f"Token authentication failed.")
+    return unauthorized("Invalid credentials.")

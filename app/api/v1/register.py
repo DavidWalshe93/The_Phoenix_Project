@@ -51,8 +51,6 @@ class RegisterApiV1(Resource):
         db.session.add(new_user)
         db.session.commit()
 
-        login_user(new_user)
-
         logger.info(f"New user created.")
         expiry = current_app.config["TOKEN_EXPIRY"]
         return make_response(new_user.generate_auth_token(expiry), 201)

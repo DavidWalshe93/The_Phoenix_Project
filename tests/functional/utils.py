@@ -174,14 +174,29 @@ def basic_auth_header_password(email: str, password: str) -> Dict[str, str]:
     return {"Authorization": _basic_auth_str(email, password)}
 
 
-def basic_auth_header_token(token: str) -> Dict[str, str]:
+def basic_auth_header_token(username: str, password: str) -> Dict[str, str]:
     """
+    Basic Authentication.
+
+    Returns the "Authorization" header and username/password for use in a request.
+
+    :param username: The basic authorization username.
+    :param password: The basic authorization password.
+    :return: A authorization header dictionary.
+    """
+    return {"Authorization": _basic_auth_str(username, password)}
+
+
+def token_auth_header_token(token: str) -> Dict[str, str]:
+    """
+    Bearer Token Authentication.
+
     Returns the "Authorization" header and token for use in a request.
 
     :param token: The basic authorization token.
     :return: A authorization header dictionary.
     """
-    return {"Authorization": _basic_auth_str(token, "")}
+    return {"Authorization": f"Bearer {token}"}
 
 
 def datetime_as_string(time: datetime) -> str:

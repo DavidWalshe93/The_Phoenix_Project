@@ -7,7 +7,7 @@ import json
 
 from flask import Response
 
-from tests.functional.utils import FlaskTestRig, login, basic_auth_header_token, datetime_as_string
+from tests.functional.utils import FlaskTestRig, login, token_auth_header_token, datetime_as_string
 
 NUM_USERS = 3
 
@@ -30,7 +30,7 @@ def test_get_users_no_auth(client_factory, make_users, **kwargs):
 
     expected = {
         "error": "Unauthorised",
-        "message": "Invalid user credentials to access resource."
+        "message": "Invalid credentials."
     }
 
     # Make request and gather response.
@@ -65,7 +65,7 @@ def test_get_users_with_auth(client_factory, make_users, **kwargs):
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.get("/api/v1/users", headers=basic_auth_header_token(token))
+    res: Response = rig.client.get("/api/v1/users", headers=token_auth_header_token(token))
 
     # Get JSON data returned.
     data = json.loads(res.data)

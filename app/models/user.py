@@ -13,7 +13,6 @@ from flask_httpauth import HTTPBasicAuth
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from .. import db
-from .. import login_manager
 
 logger = logging.getLogger(__name__)
 
@@ -126,13 +125,13 @@ class User(UserMixin, db.Model):
         """Return string representation of User object."""
         return f"<User {self.name} - {self.last_login}>"
 
-    @classmethod
-    @login_manager.user_loader
-    def load_user(cls, user_id: str):
-        """
-        Retrieves information on the logged in user.
-
-        :param user_id: The user id to load information from.
-        :return: The user object.
-        """
-        return cls.query.get(int(user_id))
+#
+# @login_manager.user_loader
+# def load_user(user_id: str):
+#     """
+#     Retrieves information on the logged in user.
+#
+#     :param user_id: The user id to load information from.
+#     :return: The user object.
+#     """
+#     return User.query.get(int(user_id))

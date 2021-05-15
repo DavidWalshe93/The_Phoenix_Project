@@ -40,8 +40,6 @@ class LoginApiV1(Resource):
             logger.error("Bad Request - User does not have an account.")
             return bad_request("Account does not exist, try registering instead.")
 
-        login_user(current_user)
-
         logger.info(f"User {current_user.id} logged in.")
 
         expiry = current_app.config["TOKEN_EXPIRY"]
