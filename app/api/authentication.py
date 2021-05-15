@@ -71,15 +71,14 @@ def verify_token(token: str):
     set_globals(token_used=True)
 
     # Return active user.
-    user = User.user_from_email(data)
+    user = User.user_from_token_props(data)
 
     if user is not None:
         logger.debug("Authorized with Token.")
     else:
         logger.warning(f"Authentication failed.")
 
-    return User.user_from_email(data)
-
+    return user
 
 def set_globals(token_used: bool) -> None:
     """

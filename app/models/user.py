@@ -9,18 +9,14 @@ from collections import OrderedDict
 
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
-from flask_httpauth import HTTPBasicAuth
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from .. import db
 
 logger = logging.getLogger(__name__)
 
-auth = HTTPBasicAuth()
 
-
-class User(UserMixin, db.Model):
+class User(db.Model):
     """Models a User object from a users SQL table."""
     __tablename__ = "users"
 
@@ -72,11 +68,11 @@ class User(UserMixin, db.Model):
                                    "password_hash": self.password_hash}).decode("utf8"))
 
     @staticmethod
-    def user_from_email(data: Dict[str, Any]) -> Union[object, bool]:
+    def user_from_token_props(data: Dict[str, Any]) -> Union[object, bool]:
         """
-        Finds and returns a user identified by their email.
+        Finds and returns a user identified by a token.
 
-        :param data: A dictionary object containing a email and password_hash field.
+        :param data: A dictionary object containing an email and password_hash field.
         :return: A User object if a user was found for the email and password supplied, else False.
         """
         # Check that an email property exists on the data passed.
@@ -96,6 +92,17 @@ class User(UserMixin, db.Model):
             return user
         else:
             return None
+
+    @staticmethod
+    def user_from_email(email: str) -> Union[object, bool]:
+        """
+        Finds and returns a user identified by their email.
+
+        :param email: A user's email.
+        :return: A User object if a user was found for the email supplied, else False.
+        """
+        # Get the identified user.
+        return User.query.filter_by(email=email).first()
 
     # ======================================================================================================================
     # Helpers
