@@ -6,7 +6,6 @@ Date:       14 May 2021
 import logging
 
 from flask import jsonify, make_response
-from flask_login import login_required
 from flask_restful import Resource
 
 from app.models.user import User

@@ -29,8 +29,6 @@ def create_app(config_name: str = "dev") -> Flask:
     :param config_name: The name of the configuration to use. Default: "dev".
     :return: An application instance with the desired environment configuration settings.
     """
-    global jws
-
     app = Flask(__name__)
 
     app = setup_env(app, config_name)

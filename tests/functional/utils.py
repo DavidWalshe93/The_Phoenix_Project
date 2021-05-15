@@ -160,6 +160,8 @@ def login(client: Client, user: dict) -> str:
     assert response.status_code == 200
     assert token != None
 
+    print(token)
+
     return token
 
 

@@ -4,7 +4,6 @@ Date:       13 May 2021
 """
 
 import logging
-from typing import Union
 
 from flask import g, current_app  # Flask globals
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
@@ -62,7 +61,7 @@ def verify_token(token: str):
     """
     # Generate JWT signer.
     jws = JWS(current_app.config["SECRET_KEY"], current_app.config["TOKEN_EXPIRY"])
-
+    logger.debug(f"{jws}")
     try:
         data = jws.loads(token)
     except Exception as err:
@@ -72,9 +71,14 @@ def verify_token(token: str):
     # Set flask global state.
     set_globals(token_used=True)
 
-    logger.debug("Authorized with Token.")
-
     # Return active user.
+    user = User.user_from_email(data)
+
+    if user is not None:
+        logger.debug("Authorized with Token.")
+    else:
+        logger.warning(f"Authentication failed.")
+
     return User.user_from_email(data)
 
 
@@ -90,12 +94,12 @@ def set_globals(token_used: bool) -> None:
 @basic_auth.error_handler
 def basic_auth_error():
     """Callback for failed authentication requests."""
-    logger.debug(f"Basic authentication failed.")
+    logger.debug("Basic authentication failed.")
     return unauthorized("Invalid credentials.")
 
 
 @token_auth.error_handler
 def token_auth_error():
     """Callback for failed authentication requests."""
-    logger.debug(f"Token authentication failed.")
+    logger.debug("Token authentication failed.")
     return unauthorized("Invalid credentials.")

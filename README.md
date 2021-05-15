@@ -9,21 +9,21 @@
 
 ## TOC
 
-- [Quickstart Guide](#quickstart-guide)
-- [Requirements](#requirements)
-- [Architecture](#architecture)
-- [Testing](#testing)
-- [CICD Pipeline](#cicd-pipeline)
-- [References](#references)
+-  [Quickstart Guide](#quickstart-guide)
+-  [Requirements](#requirements)
+-  [Architecture](#architecture)
+-  [Testing](#testing)
+-  [CICD Pipeline](#cicd-pipeline)
+-  [References](#references)
 
 ## Quickstart Guide
 
 ## Requirements
 
-- Create, Update, Delete and List web service endpoints for a User object.
-- User object should contain a name, email address, password and the date of theirlast login.
-- Provide a login endpoint that validates the email address and password provided by the user matches the one stored in
-  the database
+-  Create, Update, Delete and List web service endpoints for a User object.
+-  User object should contain a name, email address, password and the date of theirlast login.
+-  Provide a login endpoint that validates the email address and password provided by the user matches the one stored in
+   the database
 
 ## Architecture
 
@@ -68,13 +68,13 @@ original development environment.
 | Coverage Analysis     | Coveralls | [![Coverage Status](https://coveralls.io/repos/github/DavidWalshe93/The_Phoenix_Project/badge.svg?branch=main)]( https://coveralls.io/github/DavidWalshe93/The_Phoenix_Project?branch=main )                                                                                                         |
 | Code Quality Analysis |   Codacy  | [![Codacy Badge](https://app.codacy.com/project/badge/Grade/797fb534d7384d7eb18be57d82416a6d)]( https://www.codacy.com/gh/DavidWalshe93/The_Phoenix_Project/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DavidWalshe93/The_Phoenix_Project&amp;utm_campaign=Badge_Grade ) |
 
-### Architecture
+### Pipeline Architecture
 
 ![CICD Architecture](./docs/img/cicd_arch.png)
 
 ## Technical References
 
-- [Flask Web Development, 2nd Edition by Miguel Grinberg](https://learning.oreilly.com/library/view/flask-web-development/9781491991725/)
-- https://blog.miguelgrinberg.com/
-- Stack Overflow
+-  [Flask Web Development, 2nd Edition by Miguel Grinberg](https://learning.oreilly.com/library/view/flask-web-development/9781491991725/)
+-  https://blog.miguelgrinberg.com/
+-  Stack Overflow
 

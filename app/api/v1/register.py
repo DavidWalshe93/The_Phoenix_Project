@@ -7,7 +7,6 @@ import logging
 
 from flask import current_app, make_response, request
 from flask_restful import Resource
-from flask_login import login_user
 
 from app import db
 from app.models.user import User
@@ -51,6 +50,6 @@ class RegisterApiV1(Resource):
         db.session.add(new_user)
         db.session.commit()
 
-        logger.info(f"New user created.")
+        logger.info("New user created.")
         expiry = current_app.config["TOKEN_EXPIRY"]
         return make_response(new_user.generate_auth_token(expiry), 201)

@@ -69,29 +69,30 @@ class User(UserMixin, db.Model):
 
         return dict(token=s.dumps({"id": self.id,
                                    "email": self.email,
-                                   "hash": self.password_hash}).decode("utf8"))
+                                   "password_hash": self.password_hash}).decode("utf8"))
 
     @staticmethod
     def user_from_email(data: Dict[str, Any]) -> Union[object, bool]:
         """
         Finds and returns a user identified by their email.
 
-        :param data: A dictionary object containing a email and hash field.
+        :param data: A dictionary object containing a email and password_hash field.
         :return: A User object if a user was found for the email and password supplied, else False.
         """
         # Check that an email property exists on the data passed.
         email = data.get("email")
-        hash = data.get("hash")
+        password_hash = data.get("password_hash")
 
         # Ensure values exist.
-        if not all([email, hash]):
+        if not all([email, password_hash]):
+            logger.warning(f"Data missing properties.")
             return None
 
         # Get the identified user.
         user: User = User.query.filter_by(email=email).first()
 
         # Ensure the user's details have not been altered since the token was generated.
-        if user.email == email and user.password_hash == hash:
+        if user.email == email and user.password_hash == password_hash:
             return user
         else:
             return None
@@ -126,14 +127,3 @@ class User(UserMixin, db.Model):
     def __repr__(self) -> str:
         """Return string representation of User object."""
         return f"<User {self.name} - {self.last_login}>"
-
-#
-# @login_manager.user_loader
-# def load_user(user_id: str):
-#     """
-#     Retrieves information on the logged in user.
-#
-#     :param user_id: The user id to load information from.
-#     :return: The user object.
-#     """
-#     return User.query.get(int(user_id))

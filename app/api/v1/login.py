@@ -7,7 +7,6 @@ import logging
 
 from flask import current_app, make_response
 from flask_restful import Resource
-from flask_login import login_user
 
 from app.models.user import User
 from app.api.errors import bad_request

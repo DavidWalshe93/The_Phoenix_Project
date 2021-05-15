@@ -5,12 +5,10 @@ Date:       14 May 2021
 
 import logging
 
-from flask import g, session, make_response
-# from flask_login import login_required
+from flask import make_response
 from flask_restful import Resource
 
 from app.api.authentication import auth
-from app.models.user import User
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +23,7 @@ class UserApiV1(Resource):
         :return 200: The current user's information.
         :return 400: Bad user credentials.
         """
+
         # Get current User object.
         user = auth.current_user()
 
