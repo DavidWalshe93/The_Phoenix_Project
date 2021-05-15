@@ -4,7 +4,6 @@ Date:       13 May 2021
 """
 
 import requests
-import json
 import yaml
 from dataclasses import dataclass, asdict
 

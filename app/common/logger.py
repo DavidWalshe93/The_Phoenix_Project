@@ -3,10 +3,8 @@ Author:     David Walshe
 Date:       13 May 2021
 """
 
-import os
 import logging
 import logging.config
-from functools import wraps
 
 import yaml
 from colorama import Fore

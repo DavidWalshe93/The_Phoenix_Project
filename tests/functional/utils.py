@@ -4,7 +4,7 @@ Date:       13 May 2021
 """
 
 import json
-from typing import Generator, Dict, Tuple, List, Any
+from typing import Generator, Dict, List, Any
 from dataclasses import dataclass, field
 from contextlib import contextmanager
 from datetime import datetime
@@ -45,6 +45,8 @@ class FlaskTestRig:
         Factory method to create a FlaskTestRig from a generator.
 
         :param client_factory: A generator of one item, holding the flask test context.
+        :param make_users: Callable to create users with.
+        :param n_users: The number of users to create.
         :return: A FlaskTestRig object.
         """
         users = make_users(n_users, keep_password=True)

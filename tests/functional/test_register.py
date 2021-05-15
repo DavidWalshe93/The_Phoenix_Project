@@ -3,12 +3,11 @@ Author:     David Walshe
 Date:       13 May 2021
 """
 
-import pytest
 import json
 
 from flask import Response
 
-from tests.functional.utils import FlaskTestRig, login, basic_auth_header_token, datetime_as_string
+from tests.functional.utils import FlaskTestRig
 
 
 @FlaskTestRig.setup_app(n_users=3)

@@ -41,7 +41,7 @@ def make_users(load_users) -> callable:
         # Return only the number of instances requested by the user.
         try:
             user_batch = [next(_users) for _ in range(size)]
-        except StopIteration as err:
+        except StopIteration:
             raise StopIteration("No more names to yield in names generator. (Max==50)")
 
         # Generate 'last_login" times for each user.
@@ -82,7 +82,7 @@ def init_db() -> callable:
             # Create a list of User Models.
             user_models = [User(**user) for user in users]
             # Add the User Models to the Database
-            [db.session.add(user) for user in user_models]
+            _ = [db.session.add(user) for user in user_models]
             # Commit the changes.
             db.session.commit()
 

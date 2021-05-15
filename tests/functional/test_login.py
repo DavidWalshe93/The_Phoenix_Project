@@ -3,7 +3,6 @@ Author:     David Walshe
 Date:       14 May 2021
 """
 
-import pytest
 import json
 
 from flask import Response
@@ -14,7 +13,7 @@ from tests.functional.utils import FlaskTestRig, login, basic_auth_header_token,
 @FlaskTestRig.setup_app(n_users=3)
 def test_login_pass(client_factory, make_users, **kwargs):
     """
-    Test successful login operation for existing user.
+    Test successful login operation for existing user using a email/password.
 
     :endpoint:  /api/v1/user/register
     :method:    POST
@@ -24,9 +23,6 @@ def test_login_pass(client_factory, make_users, **kwargs):
     :response:  A new authentication token.
     """
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
-
-    from pprint import pprint
-    pprint(rig)
 
     # Selected user for login attempt.
     current_user = rig.db_entries[0]

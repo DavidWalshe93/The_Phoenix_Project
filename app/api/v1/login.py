@@ -7,7 +7,6 @@ import logging
 
 from flask import current_app, make_response
 from flask_restful import Resource
-from flask_restful.reqparse import RequestParser
 from flask_login import login_user
 
 from app.models.user import User
@@ -19,7 +18,8 @@ logger = logging.getLogger(__name__)
 
 class LoginApiV1(Resource):
 
-    def post(self):
+    @staticmethod
+    def post():
         """
         Logs in a user and returns a authentication token.
 
