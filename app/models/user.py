@@ -16,6 +16,15 @@ from .. import db
 logger = logging.getLogger(__name__)
 
 
+class Role(db.Model):
+    """Models a User object from a users SQL table."""
+    __tablename__ = "roles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True)
+    users = db.relationship("User", backref=db.backref("role"))
+
+
 class User(db.Model):
     """Models a User object from a users SQL table."""
     __tablename__ = "users"
@@ -26,7 +35,7 @@ class User(db.Model):
     email = db.Column(db.String, unique=True)
     password_hash = db.Column(db.String)
     last_login = db.Column(db.DateTime)
-    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"), default=1)
+    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
 
     # ======================================================================================================================
     # Password Handling
@@ -110,6 +119,13 @@ class User(db.Model):
         return User.query.filter_by(email=email).first()
 
     # ======================================================================================================================
+    # Role Handling
+    # ======================================================================================================================
+
+    def get_roles(self):
+        return self.role.name
+
+    # ======================================================================================================================
     # Helpers
     # ======================================================================================================================
 
@@ -139,12 +155,3 @@ class User(db.Model):
     def __repr__(self) -> str:
         """Return string representation of User object."""
         return f"<User {self.username} - {self.last_login}>"
-
-
-class Role(db.Model):
-    """Models a User object from a users SQL table."""
-    __tablename__ = "roles"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True)
-    users = db.relationship("User", backref="role")

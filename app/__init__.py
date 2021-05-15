@@ -68,6 +68,16 @@ def init_plugins(app: Flask) -> Flask:
     db.init_app(app)
     db.create_all(app=app)
 
+    try:
+        with app.app_context():
+            # Add roles to database
+            from app.models import Role
+            _ = [db.session.add(Role(name=role)) for role in ["user", "admin"]]
+
+            db.session.commit()
+    except Exception:
+        logger.debug(f"Role table already setup.")
+
     return app
 
 

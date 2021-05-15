@@ -49,7 +49,7 @@ class FlaskTestRig:
         :param n_users: The number of users to create.
         :return: A FlaskTestRig object.
         """
-        users = make_users(n_users, keep_password=True)
+        users = make_users(n_users, keep_password=True, keep_role_id=True)
         generator = client_factory(users)
 
         client, app, db, user = next(generator)
@@ -83,11 +83,12 @@ class FlaskTestRig:
         """
         return key_word_args["rig"]
 
-    def get_current_users(self, keep_password: bool = False) -> List[Dict[str, Any]]:
+    def get_current_users(self, keep_password: bool = False, keep_role_id: bool = False) -> List[Dict[str, Any]]:
         """
         Returns a list of dictionaries describing all users in the current Database.
 
         :param keep_password: Keep the password field in the returned user records.
+        :param keep_role_id: Keep the role_id field in the returned user records.
         :return: A list of dictionaries describing all users in the current Database.
         """
         users = deepcopy(self.db_entries)
@@ -95,25 +96,30 @@ class FlaskTestRig:
         if not keep_password:
             _ = [user.pop("password") for user in users]
 
+        if not keep_role_id:
+            _ = [user.pop("role_id") for user in users]
+
         return users
 
-    def get_first_user(self, keep_password: bool = False) -> Dict[str, Any]:
+    def get_first_user(self, keep_password: bool = False, keep_role_id: bool = False) -> Dict[str, Any]:
         """
         Returns the first existing user in the db_entries for this Flask application session.
 
         :param keep_password: Keep the password field in the returned user records.
+        :param keep_role_id: Keep the role_id field in the returned user records.
         :return: A dictionary describing a current User.
         """
-        return self.get_current_users(keep_password=keep_password)[0]
+        return self.get_current_users(keep_password=keep_password, keep_role_id=keep_role_id)[0]
 
-    def create_new_user(self, keep_password: bool = False) -> Dict[str, Any]:
+    def create_new_user(self, keep_password: bool = False, keep_role_id: bool = False) -> Dict[str, Any]:
         """
         Returns the newly generated user not in the current db of the application.
 
         :param keep_password: Keep the password field in the returned user records.
+        :param keep_role_id: Keep the role_id field in the returned user records.
         :return: A dictionary describing a new User.
         """
-        return self.make_users(1, keep_password=keep_password)[0]
+        return self.make_users(1, keep_password=keep_password, keep_role_id=keep_role_id)[0]
 
     @staticmethod
     def setup_app(n_users: int = 3):

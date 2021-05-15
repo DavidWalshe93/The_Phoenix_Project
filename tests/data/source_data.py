@@ -10,9 +10,10 @@ from dataclasses import dataclass, asdict
 
 @dataclass
 class User:
-    name: str
+    username: str
     email: str
     password: str
+    role_id: int
 
 
 # API PARAMS
@@ -38,11 +39,12 @@ def generate_users():
     # Save only required information.
     users = []
     for user in data["results"]:
-        name = user["login"]["username"]
+        username = user["login"]["username"]
         email = user["email"]
         password = user["login"]["password"]
+        role_id = 1  # All user roles
 
-        users.append(asdict(User(name, email, password)))
+        users.append(asdict(User(username, email, password, role_id)))
 
     with open("users.yml", "w") as fh:
         yaml.safe_dump(users, fh)

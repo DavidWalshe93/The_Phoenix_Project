@@ -10,7 +10,7 @@ from flask_restful import Resource
 
 from app import db
 from app.models.user import User
-from app.api.authentication import auth
+from app.api.authentication import auth, Access
 from app.api.utils import create_request_parser
 from app.api.errors import bad_request
 
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class UserApiV1(Resource):
 
-    @auth.login_required
+    @auth.login_required(role=Access.ALL())
     def get(self):
         """
         Returns the current user's information.
@@ -37,7 +37,7 @@ class UserApiV1(Resource):
 
         return make_response(data, 200)
 
-    @auth.login_required
+    @auth.login_required(role=Access.ALL())
     def put(self):
         """
         Updates a users username and/or password credentials.
@@ -75,7 +75,7 @@ class UserApiV1(Resource):
 
         return make_response({}, 204)
 
-    @auth.login_required
+    @auth.login_required(role=Access.ALL())
     def delete(self):
         """
         Deletes the current user from the system.

@@ -4,6 +4,7 @@ Date:       13 May 2021
 """
 
 import logging
+from dataclasses import dataclass, field
 
 from flask import g, current_app  # Flask globals
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
@@ -80,6 +81,7 @@ def verify_token(token: str):
 
     return user
 
+
 def set_globals(token_used: bool) -> None:
     """
     Sets the Flask globals depending on token or password usecase.
@@ -87,6 +89,11 @@ def set_globals(token_used: bool) -> None:
     :param token_used: Boolean to state if a token was used for authentication.
     """
     g.token_used = token_used
+
+
+# ======================================================================================================================
+# Authentication Error Handlers.
+# ======================================================================================================================
 
 
 @basic_auth.error_handler
@@ -101,3 +108,28 @@ def token_auth_error():
     """Callback for failed authentication requests."""
     logger.debug("Token authentication failed.")
     return unauthorized("Invalid credentials.")
+
+
+# ======================================================================================================================
+# Role System
+# ======================================================================================================================
+
+@basic_auth.get_user_roles
+def basic_auth_get_user_roles(user):
+    return user.get_roles()
+
+
+@token_auth.get_user_roles
+def token_auth_get_user_roles(user):
+    return user.get_roles()
+
+
+class Access:
+
+    @staticmethod
+    def ALL():
+        return "user", "admin"
+
+    @staticmethod
+    def ADMIN_ONLY():
+        return "admin"
