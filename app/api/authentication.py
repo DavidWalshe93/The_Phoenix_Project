@@ -61,7 +61,6 @@ def verify_token(token: str):
     """
     # Generate JWT signer.
     jws = JWS(current_app.config["SECRET_KEY"], current_app.config["TOKEN_EXPIRY"])
-    logger.debug(f"{jws}")
     try:
         data = jws.loads(token)
     except Exception as err:
