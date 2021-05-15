@@ -140,12 +140,13 @@ class FlaskTestRig:
         return _setup_app
 
 
-def login(client: Client, user: dict) -> str:
+def login(client: Client, user: dict, should_fail: bool = False) -> str:
     """
     Logs a user in to test login protected resources.
 
     :param client: The Flask Client object.
     :param user: A user to login with.
+    :param should_fail: Should not be able to login as this user.
     :return: The token to send requests with.
     """
     response: Response = client.post("/api/v1/user/login",
@@ -156,9 +157,14 @@ def login(client: Client, user: dict) -> str:
 
     token = json.loads(response.data).get("token")
 
-    # Assert token was acquired before continuing testing.
-    assert response.status_code == 200
-    assert token != None
+    if should_fail:
+        # Assert token was not acquirable.
+        assert response.status_code == 400
+        assert token == None
+    else:
+        # Assert token was acquired before continuing testing.
+        assert response.status_code == 200
+        assert token != None
 
     return token
 
