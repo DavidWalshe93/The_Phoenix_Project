@@ -3,7 +3,7 @@ Author:     David Walshe
 Date:       14 May 2021
 """
 
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 
@@ -76,7 +76,49 @@ def test_verify_password_auth_password(caplog):
     mock_password.assert_called_once_with(email=email, password=password)
 
 
-def test_auth_with_password(mock_user_class_for):
-    mock_user_class_for(sut)
-    sut.auth_with_password("", "")
-    assert False
+@pytest.mark.parametrize("set_user, ret_value",
+                         [
+                             (True, True),
+                             (True, False),
+                             (False, False),
+                         ])
+def test_auth_with_password(set_user, ret_value, mock_user_class_for, target_factory, fake_user):
+    """
+    :GIVEN: An email and password.
+    :WHEN:  Authenticating a client based on their email and password.
+    :THEN:  Verify the correct output is returned
+    """
+    # Inputs
+    email = fake_user["email"]
+    password = fake_user["password"]
+
+    # Create a mock User to patch static methods on.
+    mock_user = mock_user_class_for(sut)
+
+    # Create a User to return from User.query...
+    returned_user = mock_user_class_for(sut)
+    returned_user.verify_password.return_value = ret_value
+
+    # Grab user_filter to assert call params.
+    user_filter: MagicMock = mock_user.query.filter_by
+
+    # Assign Mock return value as a Mocked User Object.
+    if set_user:
+        user_filter.return_value.first.return_value = returned_user
+    else:
+        user_filter.return_value.first.return_value = None
+
+    # Patch internal function calls.
+    with patch(target_factory(sut, "set_globals")):
+        # Test SUT
+        actual = sut.auth_with_password(email, password)
+
+    # Assert return value
+    assert actual == ret_value
+
+    # Assert all User calls were expected
+    user_filter.assert_called_once_with(email=email)
+
+    if set_user:
+        # Check if verify password was called only if user was not None.
+        returned_user.verify_password.assert_called_once_with(password=password)

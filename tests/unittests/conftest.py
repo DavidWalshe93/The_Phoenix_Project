@@ -62,7 +62,7 @@ def mock_user_class_for(mocker):
             # Return the lastest instance.
             return MockedUser.instances[-1]
 
-    def mock(target: Union[str, ModuleType]):
+    def mock(target: Union[str, ModuleType]) :
         """
         Mocks a User object for the given target module or module path.
 
