@@ -5,7 +5,7 @@ Date:       14 May 2021
 
 import logging
 
-from flask import current_app, make_response
+from flask import current_app, make_response, request
 from flask_restful import Resource
 from flask_login import login_user
 
@@ -27,19 +27,25 @@ class RegisterApiV1(Resource):
         :return 201: User registration successful, user added to DB, return Auth token.
         :return 400: User registration failure - email already in use.
         """
+        from pprint import pprint
+
+        pprint(request.data)
+
         parser = create_request_parser("name", "email", "password")
 
         # Get request JSON body (as bytes)
         req_json = parser.parse_args()
+
+        pprint(req_json)
 
         # Create new User object from request body to check Database against.
         new_user: User = UserUtils.create_user_from(req_json)
 
         # User already exists, return a 400 error.
         if new_user.already_exists:
-            logger.error("Bad Request - Duplicate email when trying to register.")
+            logger.error("Registration error.")
             # Send back ambiguous message for security.
-            return bad_request("Login failed.")
+            return bad_request("Registration failed.")
 
         # Add new user to database.
         db.session.add(new_user)

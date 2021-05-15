@@ -27,7 +27,7 @@ def test_register_pass(client_factory, make_users, **kwargs):
     new_user = rig.create_new_user(keep_password=True)
 
     # Make request and gather response.
-    res: Response = rig.client.post("/api/v1/user/register", data=new_user)
+    res: Response = rig.client.post("/api/v1/register", data=new_user)
 
     # Get JSON data returned.
     data = json.loads(res.data)
@@ -53,13 +53,13 @@ def test_register_fail(client_factory, make_users, **kwargs):
 
     expected = {
         "error": "Bad Request",
-        "message": "Login failed."
+        "message": "Registration failed."
     }
 
     current_user = rig.get_first_user(keep_password=True)
 
     # Make request and gather response.
-    res: Response = rig.client.post("/api/v1/user/register", data=current_user)
+    res: Response = rig.client.post("/api/v1/register", data=current_user)
 
     # Get JSON data returned.
     data = json.loads(res.data)
