@@ -33,7 +33,7 @@ def test_updated_user_me_no_auth_401(client_factory, make_users, **kwargs):
     }
 
     # Make request and gather response.
-    res: Response = rig.client.put("/api/v1/users/me", data={"name": "foobar", "password": "top_secret"})
+    res: Response = rig.client.put("/api/v1/users/me", data={"username": "foobar", "password": "top_secret"})
 
     # Get JSON data returned.
     data = json.loads(res.data)
@@ -46,9 +46,9 @@ def test_updated_user_me_no_auth_401(client_factory, make_users, **kwargs):
 @FlaskTestRig.setup_app(n_users=3)
 @pytest.mark.parametrize("req_data",
                          [
-                             {"name": "foobar"},
+                             {"username": "foobar"},
                              {"password": "top_secret"},
-                             {"name": "foobar", "password": "top_secret"}
+                             {"username": "foobar", "password": "top_secret"}
                          ])
 def test_updated_user_me_with_auth_204(req_data, client_factory, make_users, **kwargs):
     """
@@ -57,7 +57,7 @@ def test_updated_user_me_with_auth_204(req_data, client_factory, make_users, **k
     :endpoint:  /api/v1/user/me
     :method:    PUT
     :auth:      True
-    :params:    Auth Token, new name and/or password values for user.
+    :params:    Auth Token, new username and/or password values for user.
     :status:    204
     :response:  Nothing.
     """
@@ -76,8 +76,8 @@ def test_updated_user_me_with_auth_204(req_data, client_factory, make_users, **k
 
     if req_data.get("password"):
         assert actual.verify_password(req_data["password"]) == True
-    if req_data.get("name"):
-        assert actual.name == req_data["name"]
+    if req_data.get("username"):
+        assert actual.username == req_data["username"]
 
     # Verify response matches expected.
     assert res.data == b""
@@ -94,13 +94,13 @@ def test_updated_user_me_with_auth_400(client_factory, make_users, **kwargs):
     :auth:      True
     :params:    Auth Token
     :status:    400
-    :response:  Bad request due to no 'name' or 'password' fields being included in the request.
+    :response:  Bad request due to no 'username' or 'password' fields being included in the request.
     """
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
     expected = {
         "error": "Bad Request",
-        "message": "Bad request data - Only 'name' and 'password' user fields can be updated."
+        "message": "Bad request data - Only 'username' and 'password' user fields can be updated."
     }
 
     # Acquire login token for first user.

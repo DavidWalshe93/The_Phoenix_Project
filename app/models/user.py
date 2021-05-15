@@ -22,10 +22,11 @@ class User(db.Model):
 
     # User columns
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    username = db.Column(db.String)
     email = db.Column(db.String, unique=True)
     password_hash = db.Column(db.String)
     last_login = db.Column(db.DateTime)
+    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
 
     # ======================================================================================================================
     # Password Handling
@@ -130,11 +131,20 @@ class User(db.Model):
         """
         return OrderedDict(
             id=self.id,
-            name=self.name,
+            username=self.username,
             email=self.email,
             last_login=self.last_login
         )
 
     def __repr__(self) -> str:
         """Return string representation of User object."""
-        return f"<User {self.name} - {self.last_login}>"
+        return f"<User {self.username} - {self.last_login}>"
+
+
+class Role(db.Model):
+    """Models a User object from a users SQL table."""
+    __tablename__ = "roles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True)
+    users = db.relationship("User", backref="role")

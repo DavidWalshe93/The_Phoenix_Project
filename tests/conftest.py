@@ -21,7 +21,7 @@ def fake_user() -> dict:
     """Returns a fake user dictionary."""
     return {
         "email": "calvin.crawford@example.com",
-        "name": "crazywolf900",
+        "username": "crazywolf900",
         "password": "cricket",
         "last_login": datetime(year=2021, month=5, day=15, hour=10, minute=51, second=20)
     }

@@ -26,7 +26,7 @@ def create_app(config_name: str = "dev") -> Flask:
 
     Allows various configurations to be injected to easily enable dev/test/prod instance creation.
 
-    :param config_name: The name of the configuration to use. Default: "dev".
+    :param config_name: The username of the configuration to use. Default: "dev".
     :return: An application instance with the desired environment configuration settings.
     """
     app = Flask(__name__)

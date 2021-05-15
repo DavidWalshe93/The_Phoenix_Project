@@ -22,7 +22,7 @@ class UserUtils:
     """
     Dataclass to convert User table Rows into an object mapping.
     """
-    name: str
+    username: str
     email: str
     password: str
     last_login: datetime
@@ -35,7 +35,7 @@ class UserUtils:
         :param row: A row from the users table.
         :return: A UserInfo object with values extracted from the passed row.
         """
-        return dict(name=row.name,
+        return dict(username=row.username,
                     email=row.email,
                     last_login=row.last_login)
 
@@ -52,7 +52,7 @@ class UserUtils:
             data = json.loads(data)
 
         return User(**asdict(cls(
-            name=data.get("name", None),
+            username=data.get("username", None),
             email=data.get("email", None),
             password=data.get("password", None),
             last_login=datetime.now()

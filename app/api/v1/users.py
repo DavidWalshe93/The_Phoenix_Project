@@ -26,7 +26,7 @@ class UsersApiV1(Resource):
         :return: A JSON list of User objects.
         """
         # Query database for Users.
-        results = User.query.with_entities(User.name, User.email, User.last_login).all()
+        results = User.query.with_entities(User.username, User.email, User.last_login).all()
 
         # Unpack result Row objects into UserInfo objects for response.
         data = [UserUtils.dict_from_user_row(row) for row in results]

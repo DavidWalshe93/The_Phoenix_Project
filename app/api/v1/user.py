@@ -40,26 +40,26 @@ class UserApiV1(Resource):
     @auth.login_required
     def put(self):
         """
-        Updates a users name and/or password credentials.
+        Updates a users username and/or password credentials.
 
         Updating the password credential will need re-authentication.
 
         :return 204: User was updated.
-        :return 400: Bad request body, missing both name and/or password fields to update.
+        :return 400: Bad request body, missing both username and/or password fields to update.
         :return 401: Bad user credentials.
         """
         # Get current User object.
         user: User = auth.current_user()
 
         # Get request data.
-        parser = create_request_parser("name", "password")
+        parser = create_request_parser("username", "password")
         data = parser.parse_args()
 
         # Flag to check if any updates occured.
         update = False
 
-        # Update name and/or password.
-        for key in ["name", "password"]:
+        # Update username and/or password.
+        for key in ["username", "password"]:
             if data.get(key) is not None:
                 logger.debug(f"{key} - Updated.")
                 setattr(user, key, data.get(key))
@@ -67,7 +67,7 @@ class UserApiV1(Resource):
 
         # If the request didn't contain any updatable fields, send back error.
         if not update:
-            return bad_request("Bad request data - Only 'name' and 'password' user fields can be updated.")
+            return bad_request("Bad request data - Only 'username' and 'password' user fields can be updated.")
 
         # Commit changes to database
         db.session.add(user)

@@ -19,7 +19,7 @@ class User:
 NUM_USERS = 50
 FORMAT = "pretty"
 NATIONALITY = "us,ie,gb"
-INCLUDE = "name,email,login"
+INCLUDE = "username,email,login"
 
 
 def generate_users():

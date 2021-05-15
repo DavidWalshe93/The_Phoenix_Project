@@ -30,7 +30,7 @@ class RegisterApiV1(Resource):
 
         pprint(request.data)
 
-        parser = create_request_parser("name", "email", "password")
+        parser = create_request_parser("username", "email", "password")
 
         # Get request JSON body (as bytes)
         req_json = parser.parse_args()
