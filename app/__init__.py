@@ -7,7 +7,6 @@ import logging
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 from flask_restful import Api
 
 from configurations.env_setup import get_config
@@ -67,12 +66,9 @@ def init_plugins(app: Flask) -> Flask:
     :param app: The Flask object.
     :return: The Flask object.
     """
-
     # Initialise Database.
     db.init_app(app)
     db.create_all(app=app)
-    # Initialise LoginManager
-    # login_manager.init_app(app=app)
 
     return app
 
