@@ -126,13 +126,13 @@ class User(UserMixin, db.Model):
         """Return string representation of User object."""
         return f"<User {self.name} - {self.last_login}>"
 
+    @classmethod
+    @login_manager.user_loader
+    def load_user(cls, user_id: str):
+        """
+        Retrieves information on the logged in user.
 
-@login_manager.user_loader
-def load_user(user_id: str) -> User:
-    """
-    Retrieves information on the logged in user.
-
-    :param user_id: The user id to load information from.
-    :return: The user object.
-    """
-    return User.query.dict_from_user_row(int(user_id))
+        :param user_id: The user id to load information from.
+        :return: The user object.
+        """
+        return cls.query.get(int(user_id))
