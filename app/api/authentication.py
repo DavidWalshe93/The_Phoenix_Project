@@ -69,15 +69,13 @@ def verify_token(token: str):
         logger.debug(f"{err}")
         return False
 
-    if "email" in data:
-        return data["email"]
-
     # Set flask global state.
-    set_globals(token_used=False)
+    set_globals(token_used=True)
 
     logger.debug("Authorized with Token.")
 
-    return g.current_user is not None
+    # Return active user.
+    return User.user_from_email(data)
 
 
 def set_globals(token_used: bool) -> None:

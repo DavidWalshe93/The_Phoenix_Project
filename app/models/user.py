@@ -4,7 +4,8 @@ Date:       11 May 2021
 """
 
 import logging
-from typing import Union
+from typing import Union, Dict, Any
+from collections import OrderedDict
 
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -68,28 +69,29 @@ class User(UserMixin, db.Model):
 
         return dict(token=s.dumps({"id": self.id,
                                    "email": self.email,
-                                   "password": self.password_hash}).decode("utf8"))
+                                   "hash": self.password_hash}).decode("utf8"))
 
     @staticmethod
-    def verify_auth_token(token) -> Union[object, None]:
+    def user_from_email(data: Dict[str, Any]) -> Union[object, bool]:
         """
-        Verifies an authentication token and returns its assigned user if valid.
+        Finds and returns a user identified by their email.
 
-        :param token: The token to verify.
-        :return: Returns the user the token is for if the token is valid, else returns None.
+        :param data: A dictionary object containing a email and hash field.
+        :return: A User object if a user was found for the email and password supplied, else False.
         """
-        s = Serializer(current_app.config["SECRET_KEY"])
-        try:
-            data = s.loads(token)
-        except Exception as err:
-            logger.debug(f"Could not load token: {err}")
+        # Check that an email property exists on the data passed.
+        email = data.get("email")
+        hash = data.get("hash")
+
+        # Ensure values exist.
+        if not all([email, hash]):
             return None
 
         # Get the identified user.
-        user: User = User.query.get(data['id'])
+        user: User = User.query.filter_by(email=email).first()
 
         # Ensure the user's details have not been altered since the token was generated.
-        if user.email == data["email"] and user.password_hash == data["password"]:
+        if user.email == email and user.password_hash == hash:
             return user
         else:
             return None
@@ -114,11 +116,11 @@ class User(UserMixin, db.Model):
         """
         Returns dictionary representation of object, useful for JSON encoding.
         """
-        return dict(
+        return OrderedDict(
             id=self.id,
             name=self.name,
             email=self.email,
-            last=self.last_login
+            last_login=self.last_login
         )
 
     def __repr__(self) -> str:
