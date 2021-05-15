@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 import pytest
 
-import app.api.authentication
+from app.models import User
 import app.api.authentication as sut
 
 
@@ -74,3 +74,9 @@ def test_verify_password_auth_password(caplog):
     mock_token.assert_not_called()
     # Assert password auth was called.
     mock_password.assert_called_once_with(email=email, password=password)
+
+
+def test_auth_with_password(mock_user_class_for):
+    mock_user_class_for(sut)
+    sut.auth_with_password("", "")
+    assert False

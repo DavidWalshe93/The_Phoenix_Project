@@ -65,6 +65,8 @@ def auth_with_password(email: str, password: str) -> bool:
     :param password: The password supplied by the user.
     :return: If the email/password combination is valid.
     """
+    print("Value:", User)
+    print("Type:", type(User))
     # Get the user information from the DB.
     user = User.query.filter_by(email=email).first()
 
