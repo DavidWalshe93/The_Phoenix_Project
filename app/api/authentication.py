@@ -14,6 +14,8 @@ from .errors import unauthorized
 
 auth = HTTPBasicAuth()
 
+NOTSET = ""
+
 logger = logging.getLogger(__name__)
 
 
@@ -33,15 +35,15 @@ def _verify_password(email_or_token: str, password: str) -> bool:
     :return: True if credentials were correct else False.
     """
     # Check if the user supplied a email or a token, if anonymous user, return false.
-    if email_or_token == "":
-        logger.debug(f"No email or token provided.")
+    if email_or_token == NOTSET:
+        logger.debug("No email or token provided.")
         return False
 
-    if password == "":
-        logger.debug(f"Authorized with Token.")
+    if password == NOTSET:
+        logger.debug("Authorized with Token.")
         return auth_with_token(token=email_or_token)
 
-    logger.debug(f"Authorized with Email/Password.")
+    logger.debug("Authorized with Email/Password.")
     return auth_with_password(email=email_or_token, password=password)
 
 
