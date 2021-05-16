@@ -99,8 +99,10 @@ def setup_api(app: Flask) -> Flask:
     api = Api(api_bp)
 
     # Setup API Routes/Endpoints.
-    api.add_resource(UserApiV1, "/api/v1/users/me", endpoint="user")
+    # api.add_resource(UsersApiV1, "/api/v1/users/me", endpoint="user")
+    api.add_resource(UsersApiV1, "/api/v1/users/<string:id>", endpoint="user")
     api.add_resource(UsersApiV1, "/api/v1/users", endpoint="users")
+    api.add_resource(UsersApiV1, "/api/v1/users/<int:id>", endpoint="users_id")
     api.add_resource(RegisterApiV1, "/api/v1/register", endpoint="register")
     api.add_resource(LoginApiV1, "/api/v1/login", endpoint="login")
 

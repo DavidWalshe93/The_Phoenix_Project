@@ -50,6 +50,19 @@ def unauthorized(msg: str) -> Response:
     return res
 
 
+def not_found(msg: str) -> Response:
+    """
+    Creates and returns an error response for a 404 - Not Found error.
+
+    :param msg: The message to include in the error.
+    :return: The 404 Error Response.
+    """
+    res = make_error(msg, "Not Found")
+    res.status_code = 404
+
+    return res
+
+
 def internal_server_error(msg: str) -> Response:
     """
     Creates and returns an error response for a 500 - Internal Server Error error.

@@ -5,6 +5,7 @@ Date:       16 May 2021
 
 import logging
 import json
+from json.decoder import JSONDecodeError
 import re
 from typing import List, Dict, Union
 from types import SimpleNamespace
@@ -12,8 +13,7 @@ from datetime import datetime
 from dataclasses import dataclass
 
 from flask import Request, jsonify, request
-from marshmallow import fields, validates, validate, ValidationError, pre_load, pre_dump, post_dump
-from marshmallow import Schema
+from marshmallow import fields, validates, validate, ValidationError, Schema, INCLUDE
 
 from werkzeug.security import generate_password_hash
 
@@ -40,6 +40,8 @@ class UserSchema(ma.SQLAlchemySchema):
     class Meta:
         # Allow auto-field mapping to SQL Alchemy Model.
         model = User
+        unknown = INCLUDE
+        include_fk = True
 
     id = ma.auto_field()
     username = ma.auto_field()
@@ -48,11 +50,22 @@ class UserSchema(ma.SQLAlchemySchema):
     password_hash = ma.auto_field()
     last_login = ma.auto_field()
     role = ma.auto_field()
+    role_id = fields.Method("init_role_id")
     role_name = fields.Method("init_role_name")
 
+    def init_role_id(self, obj):
+        """Initialisation method to set the role id from a User object."""
+        if isinstance(obj, dict):
+            return obj["role_id"]
+        else:
+            return obj.role.id
+
     def init_role_name(self, obj):
-        """Initialisation method to set the role from a User object."""
-        return obj.role.name
+        """Initialisation method to set the role name from a User object."""
+        if isinstance(obj, dict):
+            return obj["role_name"]
+        else:
+            return obj.role.name
 
     def jsonify(self, data) -> str:
         """
@@ -63,7 +76,7 @@ class UserSchema(ma.SQLAlchemySchema):
         return jsonify(self.dump(data))
 
     @classmethod
-    def parse_request(cls, *, index: str = None, many: bool = False, only: tuple = None, as_ns=False) -> Union[dict, SimpleNamespace, UserDescriptor]:
+    def parse_request(cls, *, index: str = None, many: bool = False, only: tuple = None, as_ns=False) -> Union[dict, UserDescriptor, List[UserDescriptor]]:
         """
         Parses the data from a client request and generates a UserSchema object.
 
@@ -92,8 +105,11 @@ class UserSchema(ma.SQLAlchemySchema):
         data = request.values
 
         if not data:
-            # Get the request data as a dictionary.
-            data = json.loads(request.data)
+            try:
+                # Get the request data as a dictionary.
+                data = json.loads(request.data)
+            except JSONDecodeError:
+                return None
 
         # If traversal is required to internal keys.
         if index is not None:
@@ -104,8 +120,14 @@ class UserSchema(ma.SQLAlchemySchema):
 
         # Map data to User Schema.
         if as_ns:
+            # Create a list of SimpleNamespaces if data is a list.
+            if isinstance(data, list):
+                return [SimpleNamespace(**item) for item in data]
+
+            # Return SimpleNamespace
             return SimpleNamespace(**data)
 
+        # Return Dictionary.
         return data
 
     @staticmethod
