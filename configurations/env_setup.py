@@ -34,7 +34,8 @@ class DevelopmentConfig(Config):
     """Development Environment"""
     SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URL") or f"sqlite:///{os.path.join(BASE_DIR, 'data-dev.sqlite')}"
     LOGGER_CONFIG = os.path.join(BASE_DIR, "configurations", "logger", "dev_logger.yml")
-    TOKEN_EXPIRY = 60
+    # TOKEN_EXPIRY = 60  # 1 minute
+    TOKEN_EXPIRY = 3600  # 1 Hour
 
 
 class TestConfig(Config):

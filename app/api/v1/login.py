@@ -41,5 +41,4 @@ class LoginApiV1(Resource):
 
         logger.info(f"User {current_user.id} logged in.")
 
-        expiry = current_app.config["TOKEN_EXPIRY"]
-        return make_response(current_user.generate_auth_token(expiry), 200)
+        return make_response(current_user.generate_auth_token(), 200)

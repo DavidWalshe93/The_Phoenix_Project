@@ -7,6 +7,7 @@ import logging
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 from flask_restful import Api
 
 from configurations.env_setup import get_config
@@ -18,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 # Construct Flask extensions, initialise in factory function.
 db = SQLAlchemy()
+ma = Marshmallow()
 
 
 def create_app(config_name: str = "dev") -> Flask:
@@ -77,6 +79,9 @@ def init_plugins(app: Flask) -> Flask:
             db.session.commit()
     except Exception:
         logger.debug(f"Role table already setup.")
+
+    # Initialise Marshmallow
+    ma.init_app(app)
 
     return app
 

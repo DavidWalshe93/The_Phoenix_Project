@@ -64,13 +64,15 @@ class User(db.Model):
     # Token Handling
     # ======================================================================================================================
 
-    def generate_auth_token(self, expiration: int):
+    def generate_auth_token(self):
         """
         Generates an authentication token to replace password auth for users.
 
         :param expiration: The expiry time in seconds for the generated token.
         :return: A new authentication token.
         """
+        expiration = current_app.config["TOKEN_EXPIRY"]
+
         s = Serializer(current_app.config["SECRET_KEY"], expires_in=expiration)
 
         return dict(token=s.dumps({"id": self.id,
@@ -161,3 +163,4 @@ class User(db.Model):
     def __repr__(self) -> str:
         """Return string representation of User object."""
         return f"<User {self.username} - {self.last_login}>"
+

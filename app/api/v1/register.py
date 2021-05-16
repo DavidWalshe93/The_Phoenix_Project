@@ -55,5 +55,4 @@ class RegisterApiV1(Resource):
         else:
             logger.info("New user created.")
 
-        expiry = current_app.config["TOKEN_EXPIRY"]
-        return make_response(new_user.generate_auth_token(expiry), 201)
+        return make_response(new_user.generate_auth_token(), 201)

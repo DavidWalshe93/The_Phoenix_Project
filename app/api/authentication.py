@@ -23,6 +23,10 @@ auth = MultiAuth(basic_auth, token_auth)
 logger = logging.getLogger(__name__)
 
 
+# ======================================================================================================================
+# Basic Authentication
+# ======================================================================================================================
+
 @basic_auth.verify_password
 def verify_password(email_or_token: str, password: str) -> bool:
     """Top level function used for decorator, implementation found in "_verify_password"."""
@@ -53,6 +57,10 @@ def _verify_password(email: str, password: str) -> bool:
     # Check if the users password is correct.
     return user.verify_password(password=password)
 
+
+# ======================================================================================================================
+# Token Authentication
+# ======================================================================================================================
 
 @token_auth.verify_token
 def verify_token(token: str):
