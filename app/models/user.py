@@ -4,7 +4,7 @@ Date:       11 May 2021
 """
 
 import logging
-from typing import Union, Dict, Any
+from typing import Union, Dict, Any, Tuple
 from collections import OrderedDict
 
 from flask import current_app
@@ -122,8 +122,15 @@ class User(db.Model):
     # Role Handling
     # ======================================================================================================================
 
-    def get_roles(self):
+    def get_roles(self) -> Union[str, Tuple[str]]:
+        """Returns the User's role name."""
         return self.role.name
+
+    @property
+    def is_admin(self) -> bool:
+        """Check if the User is an Admin User."""
+        print("HERE")
+        return True if self.role.name == "admin" else False
 
     # ======================================================================================================================
     # Helpers

@@ -60,6 +60,7 @@ def test_register_fail(client_factory, make_users, **kwargs):
     }
 
     current_user = rig.get_first_user(keep_password=True)
+    print(current_user)
 
     # Make request and gather response.
     res: Response = rig.client.post("/api/v1/register", data=current_user)
