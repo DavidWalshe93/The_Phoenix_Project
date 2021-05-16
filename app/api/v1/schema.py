@@ -9,6 +9,7 @@ import re
 from typing import List, Dict, Union
 from types import SimpleNamespace
 from datetime import datetime
+from dataclasses import dataclass
 
 from flask import Request, jsonify, request
 from marshmallow import fields, validates, validate, ValidationError, pre_load, pre_dump, post_dump
@@ -20,6 +21,19 @@ from app import ma
 from app.models import User
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class UserDescriptor:
+    """Used to add code completion to SimpleNamespace."""
+    id: int
+    username: str
+    email: str
+    password: str
+    password_hash: str
+    last_login: datetime
+    role: int
+    role_name: str
 
 
 class UserSchema(ma.SQLAlchemySchema):
@@ -49,7 +63,7 @@ class UserSchema(ma.SQLAlchemySchema):
         return jsonify(self.dump(data))
 
     @classmethod
-    def parse_request(cls, index: str = None, many: bool = False, only: tuple = None, as_ns=False) -> Union[dict, SimpleNamespace]:
+    def parse_request(cls, *, index: str = None, many: bool = False, only: tuple = None, as_ns=False) -> Union[dict, SimpleNamespace, UserDescriptor]:
         """
         Parses the data from a client request and generates a UserSchema object.
 
@@ -74,8 +88,12 @@ class UserSchema(ma.SQLAlchemySchema):
             except IndexError:
                 return d
 
-        # Get the request data as a dictionary.
-        data = json.loads(request.data)
+        # Read data from values.
+        data = request.values
+
+        if not data:
+            # Get the request data as a dictionary.
+            data = json.loads(request.data)
 
         # If traversal is required to internal keys.
         if index is not None:

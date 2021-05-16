@@ -25,13 +25,12 @@ def test_login_pass(client_factory, make_users, **kwargs):
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
     # Selected user for login attempt.
-    current_user = rig.db_entries[0]
+    current_user = rig.get_first_user(keep_password=True)
 
     print(current_user)
 
     # Make request and gather response.
-    res: Response = rig.client.post("/api/v1/login", data={})
-    # res: Response = rig.client.post("/api/v1/login", data=current_user)
+    res: Response = rig.client.post("/api/v1/login", data=current_user)
 
     # Get JSON data returned.
     data = json.loads(res.data)
