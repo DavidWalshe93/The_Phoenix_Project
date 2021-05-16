@@ -3,6 +3,6 @@ Author:     David Walshe
 Date:       16 May 2021
 """
 
-import logging
-
-logger = logging.getLogger(__name__)
+from .delete import DeleteHandler
+from .update import UpdateHandler
+from .retrieve import RetrieveHandler
