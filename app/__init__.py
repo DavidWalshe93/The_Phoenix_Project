@@ -94,7 +94,7 @@ def setup_api(app: Flask) -> Flask:
     :return: The
     """
     # Initialise and route Flask-RESTful API for User.
-    from .api import get_blueprint, UserApiV1, UsersApiV1, LoginApiV1, RegisterApiV1
+    from .api import get_blueprint, UsersApiV1, LoginApiV1, RegisterApiV1
     api_bp = get_blueprint()
     api = Api(api_bp)
 

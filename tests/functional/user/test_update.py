@@ -99,8 +99,8 @@ def test_updated_user_me_with_auth_400(client_factory, make_users, **kwargs):
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
     expected = {
-        "error": "Bad Request",
-        "message": "Bad request data - Only 'username' and 'password' user fields can be updated."
+        'error': 'Bad Request',
+        'message': 'Malformed request data.'
     }
 
     # Acquire login token for first user.

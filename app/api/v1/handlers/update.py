@@ -73,4 +73,4 @@ class UpdateHandler(Handler):
         db.session.add(user)
         db.session.commit()
 
-        return make_response({}, 200)
+        return make_response("", 204)

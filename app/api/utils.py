@@ -10,7 +10,6 @@ from dataclasses import dataclass, asdict
 from typing import Dict, Any
 from functools import wraps
 
-from flask_restful.reqparse import RequestParser, Namespace
 from sqlalchemy.engine.row import Row
 
 from ..models import User
@@ -61,47 +60,3 @@ class UserUtils:
             last_login=datetime.now(),
             role_id=2 if is_admin else 1
         )))
-
-
-def create_request_parser(*args) -> RequestParser:
-    """
-    Factory function for creating a Request Parser object.
-
-    :return: The generated Request Parser object.
-    """
-    parser = RequestParser()
-
-    for arg in args:
-        print(arg)
-        if isinstance(arg, tuple):
-            arg, _type = arg
-            # Parse JSON lists
-            if _type == list:
-                print("IM HERE")
-                parser.add_argument(arg, action="append")
-        else:
-            parser.add_argument(arg)
-
-    return parser
-
-
-def parse_request(*arguments) -> callable:
-    """
-    Creates a request parser and executes it on the request object.
-
-    :param arguments: The names of the argument fields to parse.
-    :return: The parsed request as a dictionary.
-    """
-
-    def _parse_request(func) -> callable:
-        @wraps(func)
-        def parse_request_wrapper(*args, **kwargs):
-            parser = create_request_parser(*arguments)
-
-            request_args: Namespace = parser.parse_args()
-
-            return func(request_args, *args, **kwargs)
-
-        return parse_request_wrapper
-
-    return _parse_request

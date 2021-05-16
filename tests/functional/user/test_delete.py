@@ -57,7 +57,7 @@ def test_get_user_me_with_auth(client_factory, make_users, **kwargs):
     """
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
-    expected = b""
+    expected = [{"username": "tinybear433", "id": 0}]
 
     # Acquire login token for first user.
     user = rig.get_first_user(keep_password=True)
@@ -67,7 +67,7 @@ def test_get_user_me_with_auth(client_factory, make_users, **kwargs):
     res: Response = rig.client.delete("/api/v1/users/me", headers=token_auth_header_token(token))
 
     # Verify response matches expected.
-    assert res.data == expected
-    assert res.status_code == 204
+    assert json.loads(res.data) == expected
+    assert res.status_code == 200
 
     login(rig.client, user, should_fail=True)
