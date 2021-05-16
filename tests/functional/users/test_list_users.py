@@ -9,8 +9,6 @@ from flask import Response
 
 from tests.functional.utils import FlaskTestRig, login, token_auth_header_token, datetime_as_string
 
-NUM_USERS = 3
-
 
 @FlaskTestRig.setup_app(n_users=3)
 def test_get_users_no_auth(client_factory, make_users, **kwargs):
@@ -85,14 +83,14 @@ def test_get_users_with_auth_as_admin(client_factory, make_users, **kwargs):
     """
     Validate a list of all users is returned on a GET request to /users endpoint.
 
-    As a User role, only usernames and last-logins should be returned.
+    As a Admin role, emails, usernames and last-logins should be returned.
 
     :endpoint:  /api/v1/users
     :method:    GET
     :auth:      True
     :params:    Auth Token
     :status:    200
-    :response:  A list of user objects containing username and last_login fields.
+    :response:  A list of user objects containing email, username and last_login fields.
     """
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
