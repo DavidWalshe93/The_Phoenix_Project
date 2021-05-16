@@ -5,6 +5,7 @@ Date:       15 May 2021
 
 import json
 
+import pytest
 from flask import Response
 
 from tests.functional.utils import FlaskTestRig, login, token_auth_header_token, datetime_as_string
@@ -43,7 +44,7 @@ def test_get_user_me_no_auth(client_factory, make_users, **kwargs):
 
 
 @FlaskTestRig.setup_app(n_users=3)
-def test_get_user_me_with_auth(client_factory, make_users, **kwargs):
+def test_get_user_me_with_auth_user(client_factory, make_users, **kwargs):
     """
     Validate the current user's information is returned on a
     GET request to /users endpoint.
@@ -53,7 +54,7 @@ def test_get_user_me_with_auth(client_factory, make_users, **kwargs):
     :auth:      True
     :params:    Auth Token
     :status:    200
-    :response:  A list of user objects.
+    :response:  A object describing the current user.
     """
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
@@ -65,6 +66,44 @@ def test_get_user_me_with_auth(client_factory, make_users, **kwargs):
 
     # Make request and gather response.
     res: Response = rig.client.get("/api/v1/users/me", headers=token_auth_header_token(token))
+
+    # Get JSON data returned.
+    data = json.loads(res.data)
+
+    # Add the last_login field to the expected data.
+    expected = [{**user, "last_login": datetime_as_string(user["last_login"])} for user in [expected]][0]
+
+    # Verify response matches expected.
+    assert data == expected
+    assert res.status_code == 200
+
+
+@FlaskTestRig.setup_app(n_users=4)
+@pytest.mark.parametrize("user_id", [1, 2, 3])
+def test_get_users_with_auth_user(user_id, client_factory, make_users, **kwargs):
+    """
+    Validate the current user's information is returned on a
+    GET request to /users endpoint.
+
+    :endpoint:  /api/v1/user/<int:id>
+    :method:    GET
+    :auth:      True
+    :params:    Auth Token, A user ID to get information on.
+    :status:    200
+    :response:  A object describing a user given the user's id,
+                including the id, username and last_login time.
+    """
+    rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
+
+    # The expected user information to be returned.
+    expected = rig.get_current_users(keep_email=False)[user_id]
+
+    # Acquire login token for first user.
+    user = rig.get_first_user(keep_password=True)
+    token = login(rig.client, user)
+
+    # Make request and gather response.
+    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_token(token))
 
     # Get JSON data returned.
     data = json.loads(res.data)
