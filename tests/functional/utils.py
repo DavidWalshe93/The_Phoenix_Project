@@ -198,7 +198,7 @@ def login(client: Client, user: dict, should_fail: bool = False) -> str:
     :param should_fail: Should not be able to login as this user.
     :return: The token to send requests with.
     """
-    response: Response = client.post("/api/v1/user/login",
+    response: Response = client.post("/api/v1/login",
                                      data=dict(
                                          email=user.get("email"),
                                          password=user.get("password")

@@ -28,7 +28,7 @@ def test_login_pass(client_factory, make_users, **kwargs):
     current_user = rig.db_entries[0]
 
     # Make request and gather response.
-    res: Response = rig.client.post("/api/v1/user/login", data=current_user)
+    res: Response = rig.client.post("/api/v1/login", data=current_user)
 
     # Get JSON data returned.
     data = json.loads(res.data)
