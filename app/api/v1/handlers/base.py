@@ -47,5 +47,5 @@ class Handler:
         pass
 
     @abstractmethod
-    def handler_user(self):
+    def handle_user(self):
         pass

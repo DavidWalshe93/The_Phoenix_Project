@@ -13,41 +13,34 @@ from app.models.user import User
 from app.api.authentication import auth, Access
 from app.api.errors import bad_request
 from app.api.v1.schema import UserSchema, ValidationError
+from app.api.v1.handlers.base import Handler
 
 logger = logging.getLogger(__name__)
 
 
 class DeleteHandler(Handler):
 
-    def __init__(self, id: int):
-        """
-        Delete endpoint handler.
-
-        :param id: The user id to delete.
-        """
-        super().__init__(id)
-
+    @auth.login_required(role=Access.ALL())
     def handle_user(self):
-        """
-        As a User, delete your own account.
-        """
-        logger.debug(f"User closed their account.")
+        """As a User, delete your own account."""
         user: User = auth.current_user()
 
         user = self.delete(user.id)
 
-        return make_response(user, 204)
+        logger.debug(f"User closed their account.")
+        return make_response(user, 200)
 
     @auth.login_required(role=Access.ADMIN_ONLY())
     def handle_admin(self):
-        """
-        As an Admin, delete a single account or delete a number of accounts.
-
-        :return: The account ids and usernames that where deleted.
-        """
+        """As an Admin, delete a single account or delete a number of accounts."""
         # Single user deletion
         if self.id:
             user = User.query.filter_by(id=self.id).first()
+
+            if user is None:
+                # User not found, raise 404 error.
+                return not_found("User does not exist.")
+
             ids = user.id
             logger.debug("Admin deleted a single user.")
 
@@ -58,10 +51,13 @@ class DeleteHandler(Handler):
                 users = UserSchema.parse_request(index="users", many=True, only=("id",), as_ns=True)
                 ids = [user.id for user in users]
                 logger.debug("Admin deleted multiple users.")
+
+            # If issue when deserializing.
             except ValidationError as err:
                 msg = UserSchema.parse_validation_error(err)
                 return bad_request(msg)
 
+        # Delete users.
         users = self.delete(ids)
 
         return make_response(users, 200)
