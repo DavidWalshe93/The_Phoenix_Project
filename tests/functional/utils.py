@@ -23,6 +23,7 @@ from app.models import User
 class AttributeFilter:
     keep_password: bool
     keep_role_id: bool
+    keep_role_name: bool
     keep_email: bool
     admin_only: bool
 
@@ -31,7 +32,8 @@ class AttributeFilter:
         """Factory method for creating and returning a Attribute Filter."""
         return cls(
             keep_password=kwargs.get("keep_password", False),
-            keep_role_id=kwargs.get("kee_role_id", False),
+            keep_role_id=kwargs.get("keep_role_id", False),
+            keep_role_name=kwargs.get("keep_role_name", False),
             keep_email=kwargs.get("keep_email", True),
             admin_only=kwargs.get("admin_only", False)
         )
@@ -60,6 +62,9 @@ def filter_attributes(func):
 
         if filter.admin_only:
             users = [user for user in users if user.get("role_id", 1) == 2]
+
+        if filter.keep_role_name:
+            _ = [user.update({"role_name": "admin" if user["role_id"] == 2 else "user"}) for user in users]
 
         if not filter.keep_role_id:
             _ = [user.pop("role_id") for user in users]
@@ -269,5 +274,6 @@ def datetime_as_string(time: datetime) -> str:
     :return: The datetime objects time as a formatted string.
     """
     date_format = "%a, %d %b %Y %H:%M:%S GMT"  # Tue, 11 May 2021 21:54:48 GMT
+    date_format = "%Y-%m-%dT%H:%M:%S"  # 2021-05-11T21:56:48
 
     return f"{time.strftime(date_format)}"

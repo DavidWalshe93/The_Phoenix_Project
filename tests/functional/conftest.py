@@ -41,6 +41,7 @@ def make_users(load_users) -> callable:
         # Return only the number of instances requested by the user.
         try:
             user_batch = [next(_users) for _ in range(size)]
+            user_batch = [{**user, "id": i} for i, user in enumerate(user_batch)]
         except StopIteration:
             raise StopIteration("No more names to yield in names generator. (Max==50)")
 

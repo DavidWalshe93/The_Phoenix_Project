@@ -94,7 +94,7 @@ def test_get_users_with_auth_as_admin(client_factory, make_users, **kwargs):
     """
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
-    expected = rig.get_current_users()
+    expected = rig.get_current_users(keep_role_name=True)
 
     # Acquire login token for first user.
     user = rig.get_first_user(keep_password=True, admin_only=True)

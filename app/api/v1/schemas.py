@@ -28,9 +28,9 @@ class UserSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field()
     username = ma.auto_field()
+    email = ma.auto_field(validate=validate.Email())
     password = fields.String()
     password_hash = ma.auto_field()
-    email = ma.auto_field(validate=validate.Email())
     last_login = ma.auto_field()
     role = ma.auto_field()
     role_name = fields.Method("init_role_name")

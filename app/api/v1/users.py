@@ -22,7 +22,7 @@ class UsersApiV1(Resource):
 
     @staticmethod
     @auth.login_required(role=Access.ALL())
-    def get():
+    def get(id: int = None):
         """
         Gathers all users in the given database and returns them as the response.
 
@@ -32,26 +32,21 @@ class UsersApiV1(Resource):
         # Query database for Users.
         results = User.query.all()
 
+        # Get currently authenticated user.
         user = auth.current_user()
 
         if user.is_admin:
+            logger.debug(f"Getting all users - as admin.")
             data = UserSchema(only=("id", "email", "username", "role_name", "last_login"), many=True).jsonify(results)
         else:
+            logger.debug(f"Getting all users - as user.")
             data = UserSchema(only=("id", "username", "last_login"), many=True).jsonify(results)
-
-        # # Unpack result Row objects into UserInfo objects for response.
-        # data = [UserUtils.dict_from_user_row(row) for row in results]
-
-        logger.debug(f"Getting all users.")
-        # Remove emails from return data if user does not have admin writes.
-        # if not user.is_admin:
-        #     _ = [item.pop("email") for item in data]
 
         return make_response(data, 200)
 
     @staticmethod
     @auth.login_required(role=Access.ADMIN_ONLY())
-    def delete():
+    def delete(id: int = None):
         """
         Deletes one or more users from the database.
 
@@ -59,16 +54,15 @@ class UsersApiV1(Resource):
         :return 401: Authentication failed.
         """
         try:
-            users = UserSchema.parse_request(request, index="users", many=True, only=("email",))
+            users = UserSchema.parse_request(request, index="users", many=True, only=("id",))
         except ValidationError as err:
             msg = UserSchema.parse_validation_error(err)
             return bad_request(msg)
 
-        emails = [user["email"] for user in users]
-        print(emails)
+        ids = [user["id"] for user in users]
 
         # Delete all users passed.
-        db.session.query(User).where(User.email.in_(emails)).delete()
+        db.session.query(User).where(User.id.in_(ids)).delete()
 
         db.session.commit()
 

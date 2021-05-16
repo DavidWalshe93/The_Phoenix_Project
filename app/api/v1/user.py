@@ -13,6 +13,7 @@ from app.models.user import User
 from app.api.authentication import auth, Access
 from app.api.utils import create_request_parser
 from app.api.errors import bad_request
+from app.api.v1.schemas import UserSchema
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +31,8 @@ class UserApiV1(Resource):
         # Get current User object.
         user = auth.current_user()
 
-        # Get user information.
-        data = user.as_dict()
-        # Remove id field.
-        data.pop("id")
+        # Convert the current User object into json.
+        data = UserSchema(only=("id", "username", "email", "last_login",)).jsonify(user)
 
         return make_response(data, 200)
 
