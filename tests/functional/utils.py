@@ -24,6 +24,7 @@ class AttributeFilter:
     keep_password: bool
     keep_role_id: bool
     keep_email: bool
+    admin_only: bool
 
     @classmethod
     def make(cls, **kwargs):
@@ -32,6 +33,7 @@ class AttributeFilter:
             keep_password=kwargs.get("keep_password", False),
             keep_role_id=kwargs.get("kee_role_id", False),
             keep_email=kwargs.get("keep_email", True),
+            admin_only=kwargs.get("admin_only", False)
         )
 
 
@@ -55,6 +57,9 @@ def filter_attributes(func):
         # Apply filters
         if not filter.keep_password:
             _ = [user.pop("password") for user in users]
+
+        if filter.admin_only:
+            users = [user for user in users if user.get("role_id", 1) == 2]
 
         if not filter.keep_role_id:
             _ = [user.pop("role_id") for user in users]
@@ -102,7 +107,7 @@ class FlaskTestRig:
         :return: A FlaskTestRig object.
         """
         users = make_users(n_users)
-        print(users)
+
         generator = client_factory(users)
 
         client, app, db, user = next(generator)
@@ -162,7 +167,9 @@ class FlaskTestRig:
 
         :return: A dictionary describing a new User.
         """
-        return self.make_users(1)[0]
+        admin_only = kwargs.get("admin_only", False)
+
+        return self.make_users(1, admin_only=admin_only)[0]
 
     @staticmethod
     def setup_app(n_users: int = 3):

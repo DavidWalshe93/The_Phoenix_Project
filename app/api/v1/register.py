@@ -29,8 +29,6 @@ class RegisterApiV1(Resource):
         """
         from pprint import pprint
 
-        pprint(request.data)
-
         parser = create_request_parser("username", "email", "password", "admin_password")
 
         # Get request JSON body (as bytes)

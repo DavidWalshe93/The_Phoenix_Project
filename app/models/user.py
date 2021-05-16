@@ -129,7 +129,6 @@ class User(db.Model):
     @property
     def is_admin(self) -> bool:
         """Check if the User is an Admin User."""
-        print("HERE")
         return True if self.role.name == "admin" else False
 
     # ======================================================================================================================

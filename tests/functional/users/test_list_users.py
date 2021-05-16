@@ -81,7 +81,7 @@ def test_get_users_with_auth_as_user(client_factory, make_users, **kwargs):
 
 
 @FlaskTestRig.setup_app(n_users=3)
-def test_get_users_with_auth_as_user(client_factory, make_users, **kwargs):
+def test_get_users_with_auth_as_admin(client_factory, make_users, **kwargs):
     """
     Validate a list of all users is returned on a GET request to /users endpoint.
 
@@ -96,10 +96,10 @@ def test_get_users_with_auth_as_user(client_factory, make_users, **kwargs):
     """
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
-    expected = rig.get_current_users(keep_email=False)
+    expected = rig.get_current_users()
 
     # Acquire login token for first user.
-    user = rig.get_first_user(keep_password=True)
+    user = rig.get_first_user(keep_password=True, admin_only=True)
     token = login(rig.client, user)
 
     # Make request and gather response.

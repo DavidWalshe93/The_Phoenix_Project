@@ -25,7 +25,7 @@ def test_register_pass(client_factory, make_users, **kwargs):
     """
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
-    new_user = rig.create_new_user(keep_password=True, keep_role_id=True)
+    new_user = rig.create_new_user(keep_password=True, keep_role_id=True, admin_only=True)
 
     new_user["admin_password"] = os.environ["ADMIN_SECRET_KEY"]
 
@@ -60,7 +60,6 @@ def test_register_fail(client_factory, make_users, **kwargs):
     }
 
     current_user = rig.get_first_user(keep_password=True)
-    print(current_user)
 
     # Make request and gather response.
     res: Response = rig.client.post("/api/v1/register", data=current_user)
