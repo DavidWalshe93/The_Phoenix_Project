@@ -6,9 +6,11 @@ Date:       16 May 2021
 import logging
 import json
 import re
-from typing import List, Dict
+from typing import List, Dict, Union
+from types import SimpleNamespace
+from datetime import datetime
 
-from flask import Request, jsonify
+from flask import Request, jsonify, request
 from marshmallow import fields, validates, validate, ValidationError, pre_load, pre_dump, post_dump
 from marshmallow import Schema
 
@@ -24,7 +26,6 @@ class UserSchema(ma.SQLAlchemySchema):
     class Meta:
         # Allow auto-field mapping to SQL Alchemy Model.
         model = User
-        ordered = True
 
     id = ma.auto_field()
     username = ma.auto_field()
@@ -48,14 +49,14 @@ class UserSchema(ma.SQLAlchemySchema):
         return jsonify(self.dump(data))
 
     @classmethod
-    def parse_request(cls, request: Request, index: str = None, many: bool = False, only: tuple = None):
+    def parse_request(cls, index: str = None, many: bool = False, only: tuple = None, as_ns=False) -> Union[dict, SimpleNamespace]:
         """
         Parses the data from a client request and generates a UserSchema object.
 
-        :param request: The client request.
         :param index: Index path to User object data.
         :param many: Flag to denote more than one User to parse.
         :param only: Whitelist of attributes to return.
+        :param as_ns: Return as a SimpleNamespace object instead of a dictionary.
         :return: A UserSchema object with the request data set internally.
         """
 
@@ -81,8 +82,13 @@ class UserSchema(ma.SQLAlchemySchema):
             keys = list(reversed(index.split(".")))
             data = indexer(data, keys)
 
+        data = cls(only=only).load(data, many=many)
+
         # Map data to User Schema.
-        return cls(only=only).load(data, many=many)
+        if as_ns:
+            return SimpleNamespace(**data)
+
+        return data
 
     @staticmethod
     def parse_validation_error(err: ValidationError) -> Dict[str, List[str]]:

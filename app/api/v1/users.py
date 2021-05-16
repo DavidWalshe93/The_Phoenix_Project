@@ -13,7 +13,7 @@ from app.models.user import User
 from app.api.utils import UserUtils, parse_request
 from app.api.authentication import auth, Access
 from app.api.errors import bad_request
-from app.api.v1.schemas import UserSchema, ValidationError
+from app.api.v1.schema import UserSchema, ValidationError
 
 logger = logging.getLogger(__name__)
 
