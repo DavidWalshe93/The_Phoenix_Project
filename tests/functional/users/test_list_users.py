@@ -7,7 +7,7 @@ import json
 
 from flask import Response
 
-from tests.functional.utils import FlaskTestRig, login, token_auth_header_token, datetime_as_string
+from tests.functional.utils import FlaskTestRig, login, token_auth_header_token
 
 
 @FlaskTestRig.setup_app(n_users=3)

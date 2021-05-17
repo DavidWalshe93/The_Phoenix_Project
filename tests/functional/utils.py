@@ -54,22 +54,22 @@ def filter_attributes(func):
             unpack = True
 
         # Create filter instance.
-        filter = AttributeFilter.make(**kwargs)
+        filter_ = AttributeFilter.make(**kwargs)
 
         # Apply filters
-        if not filter.keep_password:
+        if not filter_.keep_password:
             _ = [user.pop("password") for user in users]
 
-        if filter.admin_only:
+        if filter_.admin_only:
             users = [user for user in users if user.get("role_id", 1) == 2]
 
-        if filter.keep_role_name:
+        if filter_.keep_role_name:
             _ = [user.update({"role_name": "admin" if user["role_id"] == 2 else "user"}) for user in users]
 
-        if not filter.keep_role_id:
+        if not filter_.keep_role_id:
             _ = [user.pop("role_id") for user in users]
 
-        if not filter.keep_email:
+        if not filter_.keep_email:
             _ = [user.pop("email") for user in users]
 
         # If single instance used, unpack it back to a single dict.
