@@ -10,11 +10,8 @@ from flask import jsonify, make_response, request
 from flask_restful import Resource
 
 from app import db
-from app.models.user import User
 from app.api.utils import UserUtils
 from app.api.authentication import auth, Access
-from app.api.errors import bad_request, not_found, unauthorized
-from app.api.v1.schema import UserSchema, ValidationError
 
 from app.api.v1.handlers import UpdateHandler, RetrieveHandler, DeleteHandler
 
@@ -33,27 +30,6 @@ class UsersApiV1(Resource):
         :return 401: Authentication failed.
         """
         return RetrieveHandler(id).handle()
-        # if id:
-        #     # Query for a single user.
-        #     results = User.query.get(id)
-        #     many = False
-        # else:
-        #     # Query database for all Users.
-        #     results = User.query.all()
-        #     many = True
-        #
-        # if not results:
-        #     return not_found("User does not exist.")
-        #
-        # # Get currently authenticated user.
-        # user = auth.current_user()
-        #
-        # if user.is_admin:
-        #     data = UserSchema(only=("id", "email", "username", "role_name", "last_login"), many=many).jsonify(results)
-        # else:
-        #     data = UserSchema(only=("id", "username", "last_login"), many=many).jsonify(results)
-        #
-        # return make_response(data, 200)
 
     @staticmethod
     def delete(id: int = None):
