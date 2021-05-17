@@ -14,7 +14,7 @@ from app.models import User
 
 
 @FlaskTestRig.setup_app(n_users=3)
-def test_updated_user_me_no_auth_401(client_factory, make_users, **kwargs):
+def test_update_me_no_auth_401(client_factory, make_users, **kwargs):
     """
     Attempts to update the current user without authentication.
 
@@ -50,7 +50,7 @@ def test_updated_user_me_no_auth_401(client_factory, make_users, **kwargs):
                              {"password": "top_secret"},
                              {"username": "foobar", "password": "top_secret"}
                          ])
-def test_updated_user_me_with_auth_204(req_data, client_factory, make_users, **kwargs):
+def test_update_me_with_auth_204(req_data, client_factory, make_users, **kwargs):
     """
     Updates the currently logged in user.
 
@@ -85,7 +85,7 @@ def test_updated_user_me_with_auth_204(req_data, client_factory, make_users, **k
 
 
 @FlaskTestRig.setup_app(n_users=3)
-def test_updated_user_me_with_auth_400(client_factory, make_users, **kwargs):
+def test_update_me_with_auth_400(client_factory, make_users, **kwargs):
     """
     Attempts to update the current user but fails due to no update data being sent.
 
@@ -114,4 +114,101 @@ def test_updated_user_me_with_auth_400(client_factory, make_users, **kwargs):
 
     # Verify response matches expected.
     assert data == expected
+    assert res.status_code == 400
+
+
+@FlaskTestRig.setup_app(n_users=10)
+@pytest.mark.parametrize("user_id", [5, 6, 7])
+def test_update_user_id_with_auth_admin_204(user_id, client_factory, make_users, **kwargs):
+    """
+    Updates a User account identified by an ID.
+
+    :endpoint:  /api/v1/user/<int:id>
+    :method:    PUT
+    :auth:      True
+    :params:    Auth Token
+    :status:    204
+    :response:  Nothing
+    """
+    rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
+
+    # Acquire login token for first user.
+    user = rig.get_first_user(keep_password=True, admin_only=True)
+    token = login(rig.client, user)
+
+    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_token(token))
+
+    original = json.loads(res.data)
+
+    # Make request and gather response.
+    res: Response = rig.client.put(f"/api/v1/users/{user_id}",
+                                   headers=token_auth_header_token(token),
+                                   data={"username": "McGuffin"})
+
+    # Verify response matches expected.
+    assert res.status_code == 204
+
+    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_token(token))
+
+    data = json.loads(res.data)
+
+    assert data["username"] == "McGuffin"
+    assert data["username"] != original["username"]
+
+
+@FlaskTestRig.setup_app(n_users=10)
+def test_update_user_id_with_auth_admin_204(client_factory, make_users, **kwargs):
+    """
+    Fails to update a User by ID due to the the account not existing.
+
+    :endpoint:  /api/v1/user/<int:id>
+    :method:    PUT
+    :auth:      True
+    :params:    Auth Token
+    :status:    404
+    :response:  Error message.
+    """
+    rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
+
+    user_id = 100
+
+    # Acquire login token for first user.
+    user = rig.get_first_user(keep_password=True, admin_only=True)
+    token = login(rig.client, user)
+
+    # Make request and gather response.
+    res: Response = rig.client.put(f"/api/v1/users/{user_id}",
+                                   headers=token_auth_header_token(token),
+                                   data={"username": "McGuffin"})
+
+    # Verify response matches expected.
+    assert res.status_code == 404
+
+
+@FlaskTestRig.setup_app(n_users=10)
+def test_update_user_id_with_auth_admin_400(client_factory, make_users, **kwargs):
+    """
+    Fails to update a User by ID due to no valid data being passed to update.
+
+    :endpoint:  /api/v1/user/<int:id>
+    :method:    PUT
+    :auth:      True
+    :params:    Auth Token
+    :status:    400
+    :response:  Error message.
+    """
+    rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
+
+    user_id = 5
+
+    # Acquire login token for first user.
+    user = rig.get_first_user(keep_password=True, admin_only=True)
+    token = login(rig.client, user)
+
+    # Make request and gather response.
+    res: Response = rig.client.put(f"/api/v1/users/{user_id}",
+                                   headers=token_auth_header_token(token),
+                                   data={})
+
+    # Verify response matches expected.
     assert res.status_code == 400

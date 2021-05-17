@@ -2,12 +2,14 @@
 Author:     David Walshe
 Date:       14 May 2021
 """
-
+import bdb
 import logging
+from datetime import datetime
 
 from flask import current_app, make_response, request
 from flask_restful import Resource
 
+from app import db
 from app.models.user import User
 from app.api.errors import bad_request
 from app.api.v1.schema import UserSchema
@@ -37,5 +39,10 @@ class LoginApiV1(Resource):
             return bad_request("Account does not exist, try registering instead.")
 
         logger.info(f"User {current_user.id} logged in.")
+
+        current_user.last_login = datetime.now().replace(microsecond=0)
+
+        db.session.add(current_user)
+        db.session.commit()
 
         return make_response(current_user.generate_auth_token(), 200)

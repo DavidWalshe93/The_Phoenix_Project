@@ -57,6 +57,6 @@ class UserUtils:
             username=data.get("username", None),
             email=data.get("email", None),
             password=data.get("password", None),
-            last_login=datetime.now(),
+            last_login=datetime.now().replace(microsecond=0),
             role_id=2 if is_admin else 1
         )))

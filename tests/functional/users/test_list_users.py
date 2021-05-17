@@ -59,6 +59,7 @@ def test_get_users_with_auth_as_user(client_factory, make_users, **kwargs):
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
     expected = rig.get_current_users(keep_email=False)
+    _ = [item.pop("last_login") for item in expected]
 
     # Acquire login token for first user.
     user = rig.get_first_user(keep_password=True)
@@ -69,9 +70,7 @@ def test_get_users_with_auth_as_user(client_factory, make_users, **kwargs):
 
     # Get JSON data returned.
     data = json.loads(res.data)
-
-    # Add the last_login field to the expected data.
-    expected = [{**user, "last_login": datetime_as_string(user["last_login"])} for user in expected]
+    _ = [item.pop("last_login") for item in data]
 
     # Verify response matches expected.
     assert data == expected
@@ -95,6 +94,7 @@ def test_get_users_with_auth_as_admin(client_factory, make_users, **kwargs):
     rig: FlaskTestRig = FlaskTestRig.extract_rig_from_kwargs(kwargs)
 
     expected = rig.get_current_users(keep_role_name=True)
+    _ = [item.pop("last_login") for item in expected]
 
     # Acquire login token for first user.
     user = rig.get_first_user(keep_password=True, admin_only=True)
@@ -105,9 +105,7 @@ def test_get_users_with_auth_as_admin(client_factory, make_users, **kwargs):
 
     # Get JSON data returned.
     data = json.loads(res.data)
-
-    # Add the last_login field to the expected data.
-    expected = [{**user, "last_login": datetime_as_string(user["last_login"])} for user in expected]
+    _ = [item.pop("last_login") for item in data]
 
     # Verify response matches expected.
     assert data == expected
