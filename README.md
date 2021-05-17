@@ -23,52 +23,52 @@
 
 ## Quickstart Guide
 
-#### Clone the code.
+1) Clone the code.
 
-````shell
-git clone https://github.com/DavidWalshe93/The_Phoenix_Project.git
-````
+    ````shell
+    git clone https://github.com/DavidWalshe93/The_Phoenix_Project.git
+    ````
 
-#### Navigate to the root directory of the project:
+2) Navigate to the root directory of the project:
 
-````shell
-cd <PATH_TO_DIR>/The_Phoenix_Project/
-````
+    ````shell
+    cd <PATH_TO_DIR>/The_Phoenix_Project/
+    ````
 
-#### Create a virtual environment
+3) Create a virtual environment
 
-````shell
-python3 -m venv venv
-````
+    ````shell
+    python3 -m venv venv
+    ````
 
-#### Install requirements
+4) Install requirements
 
-````shell
-pip install -r requirements.txt
-````
+    ````shell
+    pip install -r requirements.txt
+    ````
 
-#### Setup ENV Variables
+5) Setup ENV Variables
 
-```shell
-# Sources Flask application ENV variables.
-source dev_setup.sh
-# Key used for password hashing.
-export SECRET_KEY="abc"
-# Key used for registering as an ADMIN.
-export ADMIN_SECRET_KEY="XYZ"
-```
+    ```shell
+    # Sources Flask application ENV variables.
+    source dev_setup.sh
+    # Key used for password hashing.
+    export SECRET_KEY="abc"
+    # Key used for registering as an ADMIN.
+    export ADMIN_SECRET_KEY="XYZ"
+    ```
 
-#### Run Tests
+6) Run Tests
 
-````shell
-pytest
-````
+    ````shell
+    pytest
+    ````
 
-#### Run Dev Server
+7) Run Dev Server
 
-````shell
-flask run
-````
+    ````shell
+    flask run
+    ````
 
 ## Brief
 
@@ -143,7 +143,7 @@ original development environment.
 
 ![CICD Architecture](./docs/img/cicd_arch.png)
 
-### Future Work
+## Future Work
 
 Due to timing constraints, some aspects of the project were not fully realised, this section is supplied to highlight to
 where additional time would have been spent.
