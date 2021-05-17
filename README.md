@@ -7,7 +7,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/797fb534d7384d7eb18be57d82416a6d)](https://www.codacy.com/gh/DavidWalshe93/The_Phoenix_Project/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DavidWalshe93/The_Phoenix_Project&amp;utm_campaign=Badge_Grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-## TOC
+## Table of Contents
 
 - [Requirements](#requirements)
 - [Quickstart Guide](#quickstart-guide)
@@ -119,11 +119,11 @@ Below are the endpoints for the given application.
 
 #### Access Rights
 
-| Role       | Access Level |
-|------------|:--------------:|
-| Anonyomous |       🔴      |
-| User       |       🔵      |
-| Admin      |       🟢      |
+| Role       | Access Level | Description                                                |   
+|------------|:--------------:|----------------------------------------------------------|
+| Anonyomous |       🔴      | Non-logged in user.                                       |                                               
+| User       |       🔵      | Logged in user with User privileges.                      |
+| Admin      |       🟢      | Logged in user with Admin privileges.                    |
 
 ## Testing
 
