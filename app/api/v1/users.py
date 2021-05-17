@@ -2,14 +2,12 @@
 Author:     David Walshe
 Date:       14 May 2021
 """
-import json
+
 import logging
-from typing import Union, List, Dict, Any
 
 from flask import jsonify, make_response, request
 from flask_restful import Resource
 
-from app import db
 from app.api.utils import UserUtils
 from app.api.authentication import auth, Access
 
