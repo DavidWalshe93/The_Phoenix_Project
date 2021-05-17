@@ -9,7 +9,7 @@ from copy import deepcopy
 import pytest
 from flask import Response
 
-from tests.functional.utils import FlaskTestRig, login, token_auth_header_token
+from tests.functional.utils import FlaskTestRig, login, token_auth_header_field
 
 
 @FlaskTestRig.setup_app(n_users=3)
@@ -64,7 +64,7 @@ def test_delete_me_with_auth_user_200(client_factory, make_users, **kwargs):
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.delete("/api/v1/users/me", headers=token_auth_header_token(token))
+    res: Response = rig.client.delete("/api/v1/users/me", headers=token_auth_header_field(token))
 
     # Verify response matches expected.
     assert json.loads(res.data) == expected
@@ -97,7 +97,7 @@ def test_delete_users_with_auth_user_401(client_factory, make_users, **kwargs):
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.delete("/api/v1/users", headers=token_auth_header_token(token))
+    res: Response = rig.client.delete("/api/v1/users", headers=token_auth_header_field(token))
 
     # Verify response matches expected.
     assert json.loads(res.data) == expected
@@ -138,7 +138,7 @@ def test_delete_users_with_auth_admin_200(client_factory, make_users, **kwargs):
 
     # Make request and gather response.
     res: Response = rig.client.delete("/api/v1/users",
-                                      headers=token_auth_header_token(token),
+                                      headers=token_auth_header_field(token),
                                       data=json.dumps(users_to_delete))
 
     # Verify response matches expected.
@@ -176,7 +176,7 @@ def test_delete_user_id_with_auth_admin_200(user_id, client_factory, make_users,
 
     # Make request and gather response.
     res: Response = rig.client.delete(f"/api/v1/users/{user_id}",
-                                      headers=token_auth_header_token(token))
+                                      headers=token_auth_header_field(token))
 
     # Verify response matches expected.
     assert json.loads(res.data) == [expected]

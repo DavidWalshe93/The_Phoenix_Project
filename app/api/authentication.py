@@ -123,14 +123,17 @@ def token_auth_error():
 # ======================================================================================================================
 
 @basic_auth.get_user_roles
-def basic_auth_get_user_roles(user):
+def basic_auth_get_user_roles(login_details):
     """Return the current users role from the database for username/password holders."""
+    user = User.query.filter_by(email=login_details["username"]).first()
+
     return user.get_roles()
 
 
 @token_auth.get_user_roles
 def token_auth_get_user_roles(user):
     """Return the current users role from the database for token holders."""
+    print(user)
     return user.get_roles()
 
 

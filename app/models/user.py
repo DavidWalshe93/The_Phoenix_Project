@@ -68,7 +68,6 @@ class User(db.Model):
         """
         Generates an authentication token to replace password auth for users.
 
-        :param expiration: The expiry time in seconds for the generated token.
         :return: A new authentication token.
         """
         expiration = current_app.config["TOKEN_EXPIRY"]

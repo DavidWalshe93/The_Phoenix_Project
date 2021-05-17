@@ -8,7 +8,7 @@ import json
 import pytest
 from flask import Response
 
-from tests.functional.utils import FlaskTestRig, login, token_auth_header_token, datetime_as_string
+from tests.functional.utils import FlaskTestRig, login, token_auth_header_field, datetime_as_string
 
 
 @FlaskTestRig.setup_app(n_users=3)
@@ -66,7 +66,7 @@ def test_get_user_me_with_auth_user_200(client_factory, make_users, **kwargs):
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.get("/api/v1/users/me", headers=token_auth_header_token(token))
+    res: Response = rig.client.get("/api/v1/users/me", headers=token_auth_header_field(token))
 
     # Get JSON data returned.
     data = json.loads(res.data)
@@ -104,7 +104,7 @@ def test_get_user_with_id_with_auth_user(user_id, client_factory, make_users, **
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_token(token))
+    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_field(token))
 
     # Get JSON data returned.
     data = json.loads(res.data)
@@ -141,7 +141,7 @@ def test_get_user_with_id_with_auth_user_404(client_factory, make_users, **kwarg
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_token(token))
+    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_field(token))
 
     # Get JSON data returned.
     data = json.loads(res.data)
@@ -179,7 +179,7 @@ def test_get_users_with_auth_admin(user_id, client_factory, make_users, **kwargs
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_token(token))
+    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_field(token))
 
     # Get JSON data returned.
     data = json.loads(res.data)
@@ -214,7 +214,7 @@ def test_get_user_with_id_with_auth_admin_404(client_factory, make_users, **kwar
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_token(token))
+    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_field(token))
 
     # Get JSON data returned.
     data = json.loads(res.data)

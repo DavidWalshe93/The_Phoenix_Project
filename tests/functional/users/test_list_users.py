@@ -7,7 +7,7 @@ import json
 
 from flask import Response
 
-from tests.functional.utils import FlaskTestRig, login, token_auth_header_token
+from tests.functional.utils import FlaskTestRig, login, token_auth_header_field
 
 
 @FlaskTestRig.setup_app(n_users=3)
@@ -66,7 +66,7 @@ def test_get_users_with_auth_as_user(client_factory, make_users, **kwargs):
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.get("/api/v1/users", headers=token_auth_header_token(token))
+    res: Response = rig.client.get("/api/v1/users", headers=token_auth_header_field(token))
 
     # Get JSON data returned.
     data = json.loads(res.data)
@@ -101,7 +101,7 @@ def test_get_users_with_auth_as_admin(client_factory, make_users, **kwargs):
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.get("/api/v1/users", headers=token_auth_header_token(token))
+    res: Response = rig.client.get("/api/v1/users", headers=token_auth_header_field(token))
 
     # Get JSON data returned.
     data = json.loads(res.data)

@@ -8,7 +8,7 @@ import json
 import pytest
 from flask import Response
 
-from tests.functional.utils import FlaskTestRig, login, token_auth_header_token
+from tests.functional.utils import FlaskTestRig, login, token_auth_header_field
 from app.models import User
 
 
@@ -67,7 +67,7 @@ def test_update_me_with_auth_204(req_data, client_factory, make_users, **kwargs)
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.put("/api/v1/users/me", headers=token_auth_header_token(token), data=req_data)
+    res: Response = rig.client.put("/api/v1/users/me", headers=token_auth_header_field(token), data=req_data)
 
     # Verify the updates on the database.
     with rig.app_context():
@@ -107,7 +107,7 @@ def test_update_me_with_auth_400(client_factory, make_users, **kwargs):
     token = login(rig.client, user)
 
     # Make request and gather response.
-    res: Response = rig.client.put("/api/v1/users/me", headers=token_auth_header_token(token), data={})
+    res: Response = rig.client.put("/api/v1/users/me", headers=token_auth_header_field(token), data={})
 
     data = json.loads(res.data)
 
@@ -135,19 +135,19 @@ def test_update_user_id_with_auth_admin_204(user_id, client_factory, make_users,
     user = rig.get_first_user(keep_password=True, admin_only=True)
     token = login(rig.client, user)
 
-    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_token(token))
+    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_field(token))
 
     original = json.loads(res.data)
 
     # Make request and gather response.
     res: Response = rig.client.put(f"/api/v1/users/{user_id}",
-                                   headers=token_auth_header_token(token),
+                                   headers=token_auth_header_field(token),
                                    data={"username": "McGuffin"})
 
     # Verify response matches expected.
     assert res.status_code == 204
 
-    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_token(token))
+    res: Response = rig.client.get(f"/api/v1/users/{user_id}", headers=token_auth_header_field(token))
 
     data = json.loads(res.data)
 
@@ -177,7 +177,7 @@ def test_update_user_id_with_auth_admin_204_fail(client_factory, make_users, **k
 
     # Make request and gather response.
     res: Response = rig.client.put(f"/api/v1/users/{user_id}",
-                                   headers=token_auth_header_token(token),
+                                   headers=token_auth_header_field(token),
                                    data={"username": "McGuffin"})
 
     # Verify response matches expected.
@@ -206,7 +206,7 @@ def test_update_user_id_with_auth_admin_400(client_factory, make_users, **kwargs
 
     # Make request and gather response.
     res: Response = rig.client.put(f"/api/v1/users/{user_id}",
-                                   headers=token_auth_header_token(token),
+                                   headers=token_auth_header_field(token),
                                    data={})
 
     # Verify response matches expected.

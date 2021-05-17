@@ -211,6 +211,9 @@ def login(client: Client, user: dict, should_fail: bool = False) -> str:
     :return: The token to send requests with.
     """
     response: Response = client.post("/api/v1/login",
+                                     headers={
+                                         "Authorization": basic_auth_header_field(user.get("email"), user.get("password"))
+                                     },
                                      data=dict(
                                          email=user.get("email"),
                                          password=user.get("password")
@@ -241,7 +244,7 @@ def basic_auth_header_password(email: str, password: str) -> Dict[str, str]:
     return {"Authorization": _basic_auth_str(email, password)}
 
 
-def basic_auth_header_token(username: str, password: str) -> Dict[str, str]:
+def basic_auth_header_field(username: str, password: str) -> Dict[str, str]:
     """
     Basic Authentication.
 
@@ -254,7 +257,7 @@ def basic_auth_header_token(username: str, password: str) -> Dict[str, str]:
     return {"Authorization": _basic_auth_str(username, password)}
 
 
-def token_auth_header_token(token: str) -> Dict[str, str]:
+def token_auth_header_field(token: str) -> Dict[str, str]:
     """
     Bearer Token Authentication.
 
