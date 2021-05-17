@@ -157,7 +157,7 @@ def test_update_user_id_with_auth_admin_204(user_id, client_factory, make_users,
 
 
 @FlaskTestRig.setup_app(n_users=10)
-def test_update_user_id_with_auth_admin_204(client_factory, make_users, **kwargs):
+def test_update_user_id_with_auth_admin_204_fail(client_factory, make_users, **kwargs):
     """
     Fails to update a User by ID due to the the account not existing.
 
