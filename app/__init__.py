@@ -78,7 +78,7 @@ def init_plugins(app: Flask) -> Flask:
 
             db.session.commit()
     except Exception:
-        logger.debug(f"Role table already setup.")
+        logger.debug("Role table already setup.")
 
     # Initialise Marshmallow
     ma.init_app(app)

@@ -8,7 +8,6 @@ from datetime import datetime
 import json
 from dataclasses import dataclass, asdict
 from typing import Dict, Any
-from functools import wraps
 
 from sqlalchemy.engine.row import Row
 
