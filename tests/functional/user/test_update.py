@@ -7,9 +7,8 @@ import json
 
 import pytest
 from flask import Response
-from werkzeug.security import check_password_hash
 
-from tests.functional.utils import FlaskTestRig, login, token_auth_header_token, datetime_as_string
+from tests.functional.utils import FlaskTestRig, login, token_auth_header_token
 from app.models import User
 
 
