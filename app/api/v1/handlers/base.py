@@ -6,9 +6,7 @@ Date:       16 May 2021
 import logging
 from abc import abstractmethod
 
-from app import db
 from app.models.user import User
-from app.api.utils import UserUtils
 from app.api.authentication import auth, Access
 from app.api.errors import bad_request, not_found, unauthorized
 from app.api.v1.schema import UserSchema, ValidationError
