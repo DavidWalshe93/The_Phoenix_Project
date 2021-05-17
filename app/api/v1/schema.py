@@ -6,16 +6,13 @@ Date:       16 May 2021
 import logging
 import json
 from json.decoder import JSONDecodeError
-import re
 from typing import List, Dict, Union
 from types import SimpleNamespace
 from datetime import datetime
 from dataclasses import dataclass
 
 from flask import Request, jsonify, request
-from marshmallow import fields, validates, validate, ValidationError, Schema, INCLUDE
-
-from werkzeug.security import generate_password_hash
+from marshmallow import fields, validate, ValidationError, INCLUDE
 
 from app import ma
 from app.models import User
