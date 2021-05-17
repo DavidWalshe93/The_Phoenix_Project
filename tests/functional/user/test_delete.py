@@ -9,7 +9,7 @@ from copy import deepcopy
 import pytest
 from flask import Response
 
-from tests.functional.utils import FlaskTestRig, login, token_auth_header_token, datetime_as_string
+from tests.functional.utils import FlaskTestRig, login, token_auth_header_token
 
 
 @FlaskTestRig.setup_app(n_users=3)
@@ -128,9 +128,9 @@ def test_delete_users_with_auth_admin_200(client_factory, make_users, **kwargs):
     expected = rig.get_current_users(keep_email=True, keep_password=True)
     expected = [expected[0], expected[2]]
     expected_full = deepcopy(expected)
-    [item.pop("last_login") for item in expected]
-    [item.pop("email") for item in expected]
-    [item.pop("password") for item in expected]
+    _ = [item.pop("last_login") for item in expected]
+    _ = [item.pop("email") for item in expected]
+    _ = [item.pop("password") for item in expected]
 
     # Acquire login token for first user.
     user = rig.get_first_user(keep_password=True, admin_only=True)
