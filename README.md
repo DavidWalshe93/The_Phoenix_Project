@@ -9,12 +9,12 @@
 
 ## TOC
 
-- [Quickstart Guide](#quickstart-guide)
-- [Requirements](#requirements)
-- [Architecture](#architecture)
-- [Testing](#testing)
-- [CICD Pipeline](#cicd-pipeline)
-- [References](#references)
+-  [Quickstart Guide](#quickstart-guide)
+-  [Requirements](#requirements)
+-  [Architecture](#architecture)
+-  [Testing](#testing)
+-  [CICD Pipeline](#cicd-pipeline)
+-  [References](#references)
 
 ## Requirements
 
@@ -116,7 +116,6 @@ flask run
 | Anonyomous |       🔴      |
 | User       |       🔵      |
 | Admin      |       🟢      |
-
 
 ## Testing
 
