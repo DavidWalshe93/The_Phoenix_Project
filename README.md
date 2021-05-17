@@ -11,9 +11,15 @@
 
 - [Quickstart Guide](#quickstart-guide)
 - [Requirements](#requirements)
-- [Architecture](#architecture)
+- [Brief](#brief)
+- [Application](#application)
+    
+    - [Summary](#summary)
+    - [Endpoints](#endpoints)
+
 - [Testing](#testing)
 - [CICD Pipeline](#cicd-pipeline)
+- [Future Work](#future-work)
 - [References](#references)
 
 ## Requirements
