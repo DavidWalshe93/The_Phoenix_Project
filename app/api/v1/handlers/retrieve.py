@@ -11,7 +11,7 @@ from flask import make_response
 from app.models.user import User
 from app.api.authentication import auth, Access
 from app.api.errors import not_found
-from app.api.v1.schema import UserSchema, ValidationError
+from app.api.v1.schema import UserSchema
 from app.api.v1.handlers.base import Handler
 
 logger = logging.getLogger(__name__)
