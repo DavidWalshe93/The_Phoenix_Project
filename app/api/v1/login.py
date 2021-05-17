@@ -2,7 +2,7 @@
 Author:     David Walshe
 Date:       14 May 2021
 """
-import bdb
+
 import logging
 from datetime import datetime
 
