@@ -5,7 +5,7 @@ Date:       14 May 2021
 
 import logging
 
-from flask import current_app, make_response, request
+from flask import make_response
 from flask_restful import Resource
 
 from app import db

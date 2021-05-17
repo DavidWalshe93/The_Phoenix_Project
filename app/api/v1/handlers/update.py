@@ -4,15 +4,14 @@ Date:       16 May 2021
 """
 
 import logging
-from typing import Union, List, Dict, Any
 
-from flask import make_response, request
+from flask import make_response
 
 from app import db
 from app.models.user import User
 from app.api.authentication import auth, Access
 from app.api.errors import bad_request, not_found
-from app.api.v1.schema import UserSchema, ValidationError
+from app.api.v1.schema import UserSchema
 from app.api.v1.handlers.base import Handler
 
 logger = logging.getLogger(__name__)
