@@ -4,8 +4,6 @@ Date:       13 May 2021
 """
 
 import logging
-import os
-from dataclasses import dataclass, field
 
 from flask import g, current_app  # Flask globals
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
@@ -87,7 +85,7 @@ def verify_token(token: str):
     if user is not None:
         logger.debug("Authorized with Token.")
     else:
-        logger.warning(f"Authentication failed.")
+        logger.warning("Authentication failed.")
 
     return user
 
