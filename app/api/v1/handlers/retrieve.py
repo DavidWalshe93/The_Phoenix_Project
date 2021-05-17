@@ -4,7 +4,6 @@ Date:       16 May 2021
 """
 
 import logging
-from typing import Union, List, Dict, Any
 
 from flask import make_response
 

@@ -7,7 +7,6 @@ import logging
 
 from flask_restful import Resource
 
-from app.api.utils import UserUtils
 from app.api.authentication import auth, Access
 
 from app.api.v1.handlers import UpdateHandler, RetrieveHandler, DeleteHandler
