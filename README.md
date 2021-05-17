@@ -9,18 +9,16 @@
 
 ## TOC
 
-- [Quickstart Guide](#quickstart-guide)
 - [Requirements](#requirements)
+- [Quickstart Guide](#quickstart-guide)
 - [Brief](#brief)
 - [Application](#application)
-    
     - [Summary](#summary)
     - [Endpoints](#endpoints)
-
 - [Testing](#testing)
 - [CICD Pipeline](#cicd-pipeline)
 - [Future Work](#future-work)
-- [References](#references)
+- [References](#technical-references)
 
 ## Requirements
 
