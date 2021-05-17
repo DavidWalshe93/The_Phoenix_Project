@@ -25,6 +25,13 @@
 - Python3.7 or higher
 - SQLite
 
+Python3.7 is the lowest supported version due to heavy usage of Python 3.7's 
+[dataclasses](https://docs.python.org/3/library/dataclasses.html) feature to improve
+code readability and self-documentation of data structures. If back porting was a requirement,
+they could be refactored out to use the [NamedTuple](https://docs.python.org/3/library/typing.html#typing.NamedTuple) class 
+or [namedtuple](https://docs.python.org/3/library/collections.html#collections.namedtuple) collection objects instead. Use of a 
+3rd party library such as [attrs](https://www.attrs.org/en/stable/index.html) is also an alternative. 
+
 ## Quickstart Guide
 
 1) Clone the code.
@@ -127,11 +134,29 @@ Below are the endpoints for the given application.
 
 ## Testing
 
-Testing was carried out using the PyTest framework.
+### PyTest
+
+Testing was carried out using the PyTest framework with 43 tests created in total.
+
+Pytest was chosen over unittest/nosetest for its expressive syntax and powerful fixture injection features, greatly
+reducing boilerplate code.
 
 The image below depicts the granular coverage report for the delivered application.
 
 ![img.png](docs/img/coverage.png)
+
+### Postman
+
+Postman was also used to test against a development instance of the application during development. The exported Postman
+project can be found in the ./postman directory.
+
+To improve repeatability, two helper requests were setup to clear the development application's database and then
+initialise it with five users before running the rest of the request tests. This allowed requests to start from the same
+state each test cycle.
+
+The tests were writing using Postmans Test API and the Pre/Post request hooks offered by Postman.
+
+![img.png](docs/img/postman_results.png)
 
 ## CICD Pipeline
 
@@ -156,6 +181,9 @@ original development environment.
 Due to timing constraints, some aspects of the project were not fully realised, this section is supplied to highlight to
 where additional time would have been spent.
 
+- ❗ Continue to improve test coverage.
+    - Add tox to check against multiple versions of Python.    
+    - Add additional unittesting to validate rarely activated code paths.
 - ❗ Add additional endpoint, allowing admins to create a User.
 - ❗ Add Docker support for better test/deployment support.
 
