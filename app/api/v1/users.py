@@ -5,7 +5,6 @@ Date:       14 May 2021
 
 import logging
 
-from flask import jsonify, make_response, request
 from flask_restful import Resource
 
 from app.api.utils import UserUtils
