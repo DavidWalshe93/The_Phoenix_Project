@@ -11,7 +11,7 @@ from types import SimpleNamespace
 from datetime import datetime
 from dataclasses import dataclass
 
-from flask import Request, jsonify, request
+from flask import jsonify, request
 from marshmallow import fields, validate, ValidationError, INCLUDE
 
 from app import ma
