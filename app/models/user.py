@@ -93,7 +93,7 @@ class User(db.Model):
 
         # Ensure values exist.
         if not all([email, password_hash]):
-            logger.warning(f"Data missing properties.")
+            logger.warning("Data missing properties.")
             return None
 
         # Get the identified user.
