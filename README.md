@@ -9,17 +9,17 @@
 
 ## TOC
 
--  [Quickstart Guide](#quickstart-guide)
--  [Requirements](#requirements)
--  [Architecture](#architecture)
--  [Testing](#testing)
--  [CICD Pipeline](#cicd-pipeline)
--  [References](#references)
+- [Quickstart Guide](#quickstart-guide)
+- [Requirements](#requirements)
+- [Architecture](#architecture)
+- [Testing](#testing)
+- [CICD Pipeline](#cicd-pipeline)
+- [References](#references)
 
 ## Requirements
 
--  Python3.7 or higher
--  SQLite
+- Python3.7 or higher
+- SQLite
 
 ## Quickstart Guide
 
@@ -79,13 +79,15 @@
 
 ## Application
 
+Below are some thoughts behind why the application stack was chosen.
+
 ### Summary
 
 | Component             | Framework/Library          | Why                                                                                                                      |
 |-----------------------|----------------------------|--------------------------------------------------------------------------------------------------------------------------|
 | Python                | --                         | Most experience with.                                                                                                    |
 | API                   | Flask/FlaskRESTful         | Rapid prototyping with large eco-system of feature plugins.                                                              |
-| Database              | SQLite                     | Good for proto-typing and fast dev-test cycle with in-memory functionality ideal for repeatable unit/functional testing. |
+| Database              | SQLite                     | Good for prototyping and fast dev-test cycle with in-memory functionality, ideal for repeatable unit/functional testing. |
 | ORM                   | SQLAlchemy                 | Easier to work with and faster turn around time than writing raw SQL. Better code readability.                           |
 | DTO/Schema            | Marshmallow                | Easy transfer of database objects/Request bodies into various data-structures including Dicts/Dataclasses/Namespaces.    |
 | Login/Role Management | FlaskHTTPAuth              | Supplies a simple role based system out-of-the-box, protects endpoints using the intuitive decorator pattern.            |
@@ -93,6 +95,8 @@
 | Password Hashing      | Werkzeug                   | Clear interface for hashing passwords before saving to database and for verifying hashed passwords on login attempts.    |
 
 ### Endpoints
+
+Below are the endpoints for the given application.
 
 | Endpoint            | Method | Auth | Action                                                                        |
 |---------------------|--------|:----:|-------------------------------------------------------------------------------|
