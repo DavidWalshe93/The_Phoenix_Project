@@ -6,12 +6,12 @@ Date:       16 May 2021
 import logging
 from typing import Union, List, Dict, Any
 
-from flask import make_response, request
+from flask import make_response
 
 from app import db
 from app.models.user import User
 from app.api.authentication import auth, Access
-from app.api.errors import bad_request
+from app.api.errors import bad_request, not_found
 from app.api.v1.schema import UserSchema, ValidationError
 from app.api.v1.handlers.base import Handler
 
@@ -27,7 +27,7 @@ class DeleteHandler(Handler):
 
         user = self.delete(user.id)
 
-        logger.debug(f"User closed their account.")
+        logger.debug("User closed their account.")
         return make_response(user, 200)
 
     @auth.login_required(role=Access.ADMIN_ONLY())
