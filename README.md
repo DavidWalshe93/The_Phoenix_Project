@@ -51,14 +51,20 @@ or [namedtuple](https://docs.python.org/3/library/collections.html#collections.n
     ````shell
     python3 -m venv venv
     ````
+   
+4) Activate the virtual environment
 
-4) Install requirements
+    ````shell
+    source ./venv/bin/activate
+    ````
+
+5) Install requirements
 
     ````shell
     pip install -r requirements.txt
     ````
 
-5) Setup ENV Variables
+6) Setup ENV Variables
 
     ```shell
     # Sources Flask application ENV variables.
@@ -69,13 +75,13 @@ or [namedtuple](https://docs.python.org/3/library/collections.html#collections.n
     export ADMIN_SECRET_KEY="XYZ"
     ```
 
-6) Run Tests
+7) Run Tests
 
     ````shell
     pytest
     ````
 
-7) Run Dev Server
+8) Run Dev Server
 
     ````shell
     flask run
