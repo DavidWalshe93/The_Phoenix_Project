@@ -1,6 +1,8 @@
 # The_Phoenix_Project
 
-> A stepping stone codebase to  working on "Project Unicorn".
+> A stepping stone codebase to  working on "The Unicorn Project". 
+> ([1](https://www.amazon.co.uk/Unicorn-Project-Developers-Disruption-Thriving-ebook/dp/B07QT9QR41), 
+> [2](https://www.amazon.co.uk/Phoenix-Project-DevOps-Helping-Business/dp/0988262509))
 
 [![Build Status](https://travis-ci.com/DavidWalshe93/The_Phoenix_Project.svg?branch=main)](https://travis-ci.com/DavidWalshe93/The_Phoenix_Project)
 [![Coverage Status](https://coveralls.io/repos/github/DavidWalshe93/The_Phoenix_Project/badge.svg?branch=main)](https://coveralls.io/github/DavidWalshe93/The_Phoenix_Project?branch=main)
@@ -90,7 +92,7 @@ or [namedtuple](https://docs.python.org/3/library/collections.html#collections.n
 ## Brief
 
 - Create, Update, Delete and List web service endpoints for a User object.
-- User object should contain a name, email address, password and the date of theirlast login.
+- User object should contain a name, email address, password and the date of their last login.
 - Provide a login endpoint that validates the email address and password provided by the user matches the one stored in
   the database
 
@@ -160,7 +162,7 @@ To improve repeatability, two helper requests were setup to clear the developmen
 initialise it with five users before running the rest of the request tests. This allowed requests to start from the same
 state each test cycle.
 
-The tests were writing using Postmans Test API and the Pre/Post request hooks offered by Postman.
+The tests were written using Postman's Test API and the Pre/Post request hooks offered by Postman.
 
 ![img.png](docs/img/postman_results.png)
 
@@ -184,7 +186,7 @@ original development environment.
 
 ## Future Work
 
-Due to timing constraints, some aspects of the project were not fully realised, this section is supplied to highlight to
+Due to timing constraints, some aspects of the project were not fully realised, this section is supplied to highlight
 where additional time would have been spent.
 
 - ❗ Continue to improve test coverage.
